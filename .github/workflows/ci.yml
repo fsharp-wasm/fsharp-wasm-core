@@ -1,0 +1,22 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop, 'claude/**']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '10.0.x'
+      # The library is compiled by fsharp-wasm together with a program; here its sources only have to stay valid F# on .NET.
+      - name: Build FSharp.Wasm.Core
+        run: dotnet build FSharp.Wasm.Core/FSharp.Wasm.Core.fsproj -c Release
