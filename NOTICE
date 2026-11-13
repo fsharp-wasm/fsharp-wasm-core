@@ -1,0 +1,9 @@
+FSharp.Wasm.Core (fsharp-wasm-core)
+Copyright 2026 The fsharp-wasm contributors
+
+Licensed under the Apache License, Version 2.0 (see LICENSE).
+
+Provenance: the sources in FSharp.Wasm.Core/ were moved here from the fsharp-wasm repository (its directory
+fable-library-wasmgc), where they were published under the MIT License, Copyright (c) 2025-2026 Fable WasmGC Backend
+Contributors.  That licence text is kept in LICENSES/MIT-fsharp-wasm.txt; the Apache License 2.0 applies to this repository
+as a whole, including all later changes.

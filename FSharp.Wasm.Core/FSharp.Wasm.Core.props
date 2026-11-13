@@ -1,0 +1,29 @@
+<Project>
+  <!-- The sources of FSharp.Wasm.Core, in compilation order.  A program compiled by fsharp-wasm imports this file instead of
+       listing them:
+
+         <PropertyGroup>
+           <FSharpWasmCoreDir Condition="'$(FSharpWasmCoreDir)' == ''">…/fsharp-wasm-core/FSharp.Wasm.Core</FSharpWasmCoreDir>
+         </PropertyGroup>
+         <Import Project="$(FSharpWasmCoreDir)/FSharp.Wasm.Core.props" Condition="'$(FABLE_COMPILER_WASMGC)' == 'True'" />
+
+       (The compiler sets FABLE_COMPILER_WASMGC — the name is the front end's — so the same project builds under .NET with
+       the BCL types.)  Import it from the ROOT of a dependency graph: the files must precede everything that uses them.
+
+       A program that wants only part of the library sets `FSharpWasmCoreOnly` to the groups it needs
+       (Interop;Option;Result;Collections;Lists;Math); the default is Collections, which is what programs need to share. -->
+  <PropertyGroup>
+    <FSharpWasmCoreDir Condition="'$(FSharpWasmCoreDir)' == ''">$(MSBuildThisFileDirectory)</FSharpWasmCoreDir>
+    <FSharpWasmCoreOnly Condition="'$(FSharpWasmCoreOnly)' == ''">Collections</FSharpWasmCoreOnly>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Interop.fs"                                  Condition="$(FSharpWasmCoreOnly.Contains('Interop'))" />
+    <Compile Include="$(MSBuildThisFileDirectory)Option.fs"                                   Condition="$(FSharpWasmCoreOnly.Contains('Option'))" />
+    <Compile Include="$(MSBuildThisFileDirectory)Result.fs"                                   Condition="$(FSharpWasmCoreOnly.Contains('Result'))" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections/Map.fs"                          Condition="$(FSharpWasmCoreOnly.Contains('Collections'))" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections/Set.fs"                          Condition="$(FSharpWasmCoreOnly.Contains('Collections'))" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections/System.Collections.Generic.fs"   Condition="$(FSharpWasmCoreOnly.Contains('Collections'))" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections/ListHelpers.fs"                  Condition="$(FSharpWasmCoreOnly.Contains('Lists'))" />
+    <Compile Include="$(MSBuildThisFileDirectory)Math/MathHelpers.fs"                         Condition="$(FSharpWasmCoreOnly.Contains('Math'))" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,23 @@
+<!-- FSharp.Wasm.Core — the F# base library of programs compiled by fsharp-wasm (WasmGC).
+     Source-only: a program compiles these files together with its own (see FSharp.Wasm.Core.props); nothing here is a
+     binary dependency.  The project exists so that an IDE and `dotnet build` can check the sources under .NET too. -->
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>preview</LangVersion>
+    <Nullable>enable</Nullable>
+    <PackageId>FSharp.Wasm.Core</PackageId>
+    <Description>F# base library (Option, Result, collections, math helpers, host-interop attributes) for programs compiled by fsharp-wasm to WebAssembly GC.</Description>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/fsharp-wasm/fsharp-wasm-core</RepositoryUrl>
+  </PropertyGroup>
+
+  <!-- the whole library, in compilation order (a program imports the same list, or the groups of it that it needs) -->
+  <PropertyGroup>
+    <FSharpWasmCoreOnly>Interop;Option;Result;Collections;Lists;Math</FSharpWasmCoreOnly>
+  </PropertyGroup>
+  <Import Project="FSharp.Wasm.Core.props" />
+
+</Project>
