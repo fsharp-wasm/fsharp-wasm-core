@@ -4,19 +4,33 @@ on:
   push:
     branches: [main, develop, 'claude/**']
   pull_request:
+    branches: [main]
   workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
-  build:
+  build-and-test:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v6
-      - uses: actions/setup-dotnet@v5
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
         with:
           dotnet-version: '10.0.x'
-      # The library is compiled by fsharp-wasm together with a program; here its sources only have to stay valid F# on .NET.
+
+      - name: Cache NuGet
+        uses: actions/cache@v5
+        with:
+          path: ~/.nuget/packages
+          key: nuget-core-${{ runner.os }}-${{ hashFiles('**/*.fsproj') }}
+          restore-keys: nuget-core-${{ runner.os }}-
+
       - name: Build FSharp.Wasm.Core
         run: dotnet build FSharp.Wasm.Core/FSharp.Wasm.Core.fsproj -c Release
+
+      - name: Run Expecto tests
+        run: dotnet test tests/FSharp.WasmCore.Tests/FSharp.WasmCore.Tests.fsproj -c Release --logger "console;verbosity=normal"
