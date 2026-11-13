@@ -9,14 +9,16 @@
     <LangVersion>preview</LangVersion>
     <Nullable>enable</Nullable>
     <PackageId>FSharp.Wasm.Core</PackageId>
-    <Description>F# base library (Option, Result, collections, math helpers, host-interop attributes) for programs compiled by fsharp-wasm to WebAssembly GC.</Description>
+    <Description>F# base library (System.* surface, Option, Result, collections, math helpers, host-interop attributes) for programs compiled by fsharp-wasm to WebAssembly GC.</Description>
+    <RootNamespace>FSharp.Wasm.Core</RootNamespace>
+    <AssemblyName>FSharp.Wasm.Core</AssemblyName>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <RepositoryUrl>https://github.com/fsharp-wasm/fsharp-wasm-core</RepositoryUrl>
   </PropertyGroup>
 
   <!-- the whole library, in compilation order (a program imports the same list, or the groups of it that it needs) -->
   <PropertyGroup>
-    <FSharpWasmCoreOnly>Interop;Option;Result;Collections;Lists;Math</FSharpWasmCoreOnly>
+    <FSharpWasmCoreOnly>Interop;Bcl;Option;Result;Collections;Lists;Math</FSharpWasmCoreOnly>
   </PropertyGroup>
   <Import Project="FSharp.Wasm.Core.props" />
 

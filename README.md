@@ -8,6 +8,8 @@ compiler turns them into WasmGC like any other code. Under .NET the same project
 ```text
 FSharp.Wasm.Core/
   Interop.fs                          [<Import>], [<Export>], nativeOnly — module Fable.Core (the name the front end looks for)
+  Interfaces.fs  Exception.fs         the System.* surface in F#: IList / IDictionary, the exception hierarchy
+  Math.fs  Task.fs  RuntimeHelper.fs  System.Math, System.Threading.Tasks, runtime helpers
   Option.fs  Result.fs                combinators
   Collections/
     Map.fs  Set.fs                    persistent collections (comparer-injected, as the front end calls them)
@@ -15,6 +17,7 @@ FSharp.Wasm.Core/
     ListHelpers.fs                    pairwise, distinct, countBy, groupBy …
   Math/MathHelpers.fs                 powi/powf/clamp and the functions without a wasm opcode: exp, atan, atan2, asin, acos, sinh, cosh, tanh
   FSharp.Wasm.Core.props              the compile list, in order, for a program to import
+tests/FSharp.WasmCore.Tests/          Expecto tests, run under .NET (dotnet run --project tests/FSharp.WasmCore.Tests)
 ```
 
 ## Use it
@@ -28,7 +31,7 @@ FSharp.Wasm.Core/
 ```
 
 Import it from the root of the dependency graph (the files must precede everything that uses them). `FSharpWasmCoreOnly`
-selects groups (`Interop;Option;Result;Collections;Lists;Math`; default `Collections`). The compiler finds the library by
+selects groups (`Interop;Bcl;Option;Result;Collections;Lists;Math`; default `Collections`). The compiler finds the library by
 itself — `FSHARP_WASM_CORE_DIR`, else the `core/` checkout inside its repository, else a sibling `fsharp-wasm-core/`.
 
 ## Where things are

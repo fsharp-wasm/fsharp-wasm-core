@@ -13,10 +13,21 @@ type ArrayEnumerator<'T>(items: 'T array) =
     member _.Current : 'T = items.[index]
     member _.Dispose() : unit = ()
 
-/// LIFO.
-type Stack<'T when 'T : equality>() =
+/// LIFO.  The primary constructor takes the initial items (pushed in order: the first ends up at the bottom, as in the BCL);
+/// the other constructors delegate to it — a secondary constructor with a `then` block is not something the backend builds.
+type Stack<'T when 'T : equality>(initial: seq<'T>) =
     let mutable items : 'T array = Array.zeroCreate 4
     let mutable count = 0
+    do
+        for item in initial do
+            if count = items.Length then
+                let bigger : 'T array = Array.zeroCreate (items.Length * 2)
+                for i in 0 .. count - 1 do bigger.[i] <- items.[i]
+                items <- bigger
+            items.[count] <- item
+            count <- count + 1
+
+    new() = Stack<'T>(Seq.empty)
 
     member _.Count : int = count
 
@@ -38,6 +49,19 @@ type Stack<'T when 'T : equality>() =
     member _.Peek() : 'T =
         if count = 0 then failwith "Stack empty."
         items.[count - 1]
+
+    /// The BCL's non-throwing pair: false (and `result` untouched) when the stack is empty.
+    member this.TryPop([<System.Runtime.InteropServices.Out>] result: byref<'T>) : bool =
+        if count = 0 then false
+        else
+            result <- this.Pop()
+            true
+
+    member _.TryPeek([<System.Runtime.InteropServices.Out>] result: byref<'T>) : bool =
+        if count = 0 then false
+        else
+            result <- items.[count - 1]
+            true
 
     member _.Clear() : unit =
         items <- Array.zeroCreate 4
@@ -69,7 +93,7 @@ type Stack<'T when 'T : equality>() =
 /// FIFO over a growing ring buffer.
 
     /// `Stack(capacity)`: the capacity is only a hint.
-    new(_capacity: int) = Stack<'T>()
+    new(_capacity: int) = Stack<'T>(Seq.empty)
 
 type Queue<'T when 'T : equality>() =
     let mutable items : 'T array = Array.zeroCreate 4

@@ -7,3 +7,6 @@ Provenance: the sources in FSharp.Wasm.Core/ were moved here from the fsharp-was
 fable-library-wasmgc), where they were published under the MIT License, Copyright (c) 2025-2026 Fable WasmGC Backend
 Contributors.  That licence text is kept in LICENSES/MIT-fsharp-wasm.txt; the Apache License 2.0 applies to this repository
 as a whole, including all later changes.
+
+The System.* sources (Interfaces, Exception, Math, Task, RuntimeHelper) and the tests come from this repository's own earlier history
+(branch develop), which had no licence file.
