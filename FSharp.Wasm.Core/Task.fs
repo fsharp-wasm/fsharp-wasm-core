@@ -54,7 +54,7 @@ type Task(action: unit -> unit) =
                         || status = TaskStatus.Canceled
     member _.IsFaulted   = status = TaskStatus.Faulted
     member _.IsCanceled  = status = TaskStatus.Canceled
-    member _.Exception   = if exn' = null then null else AggregateException(exn')
+    member _.Exception : AggregateException = if exn' = null then Unchecked.defaultof<AggregateException> else AggregateException(exn')
 
     member this.Start() =
         status <- TaskStatus.Running
@@ -127,7 +127,7 @@ type Task<'T>(func: unit -> 'T) =
                         || status = TaskStatus.Canceled
     member _.IsFaulted   = status = TaskStatus.Faulted
     member _.IsCanceled  = status = TaskStatus.Canceled
-    member _.Exception   = if exn' = null then null else AggregateException(exn')
+    member _.Exception : AggregateException = if exn' = null then Unchecked.defaultof<AggregateException> else AggregateException(exn')
 
     member this.Result : 'T =
         if not this.IsCompleted then this.Start()
