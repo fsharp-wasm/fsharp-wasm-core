@@ -28,8 +28,8 @@ written twice, or would be: each is a project of its own, **without dependencies
 
 | project | what it is |
 |---|---|
-| `FSharp.Wasm.Data` | `Json` (a value type, a writer, a pretty printer, a parser that reports the position of the first problem, bounded nesting, no exceptions) and `Numbers` (integer and float parsing by the JSON grammar, no `TryParse`) — what the backend and the newsletter each had |
-| `FSharp.Wasm.Ui` | typed CSS and HTML for the web and for email: `Color` (hex, hsl, oklch, WCAG contrast), `Style` (typed values, selectors, rules, merging, rendering), `Html` (a document tree that is data), `Inline` (an inliner), `Ink` (the grid and components of Foundation for Emails, MIT, as F#) — see its README section in fsharp-wasm-newsletter's `docs/ui.md` |
+| `FSharp.Wasm.Data` | `Json` (a value type, a writer, a pretty printer, a parser that reports the position of the first problem, bounded nesting, no exceptions) and `Numbers` (integer and float parsing by the JSON grammar, no `TryParse`) — what the backend and the newsletter each had; both build on it now (`FSharp.Wasm.Server`, `Newsletter.Core`) |
+| `FSharp.Wasm.Ui` | typed CSS and HTML for the web and for email: `Color` (hex, hsl, oklch, WCAG contrast), `Style` (typed values, selectors, rules, merging, rendering), `Html` (a document tree that is data), `Inline` (an inliner), `Ink` (the grid and components of Foundation for Emails, MIT, as F#) — see [docs/ui.md](docs/ui.md) |
 
 ```bash
 git submodule update --init lib/wasmecto
