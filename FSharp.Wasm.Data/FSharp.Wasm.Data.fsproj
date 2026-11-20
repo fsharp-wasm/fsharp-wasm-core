@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- FSharp.Wasm.Data: data formats written out, with nothing to depend on — JSON (a value type, a writer, a parser with positions and a
+       depth limit) and the number parsing it needs.  Runs under .NET and as WasmGC; tested both ways (tests/FSharp.Wasm.Libs.Tests). -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>preview</LangVersion>
+    <RootNamespace>FSharp.Wasm.Data</RootNamespace>
+    <PackageId>FSharp.Wasm.Data</PackageId>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/fsharp-wasm/fsharp-wasm-core</RepositoryUrl>
+    <NuGetAudit>false</NuGetAudit>
+    <NoWarn>$(NoWarn);NU1900;NETSDK1188</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Numbers.fs" />
+    <Compile Include="Json.fs" />
+  </ItemGroup>
+</Project>

@@ -1,4 +1,8 @@
 <Solution>
   <Project Path="FSharp.Wasm.Core/FSharp.Wasm.Core.fsproj" />
+  <Project Path="FSharp.Wasm.Data/FSharp.Wasm.Data.fsproj" />
+  <Project Path="FSharp.Wasm.Ui/FSharp.Wasm.Ui.fsproj" />
   <Project Path="tests/FSharp.WasmCore.Tests/FSharp.WasmCore.Tests.fsproj" />
+  <Project Path="tests/FSharp.Wasm.Libs.Tests/FSharp.Wasm.Libs.Tests.fsproj" />
+  <Project Path="tests/FSharp.Wasm.Libs.WasmTests/FSharp.Wasm.Libs.WasmTests.fsproj" />
 </Solution>

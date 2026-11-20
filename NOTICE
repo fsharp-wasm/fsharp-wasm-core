@@ -10,3 +10,10 @@ as a whole, including all later changes.
 
 The System.* sources (Interfaces, Exception, Math, Task, RuntimeHelper) and the tests come from this repository's own earlier history
 (branch develop), which had no licence file.
+
+FSharp.Wasm.Data/Numbers.fs and Json.fs unite the number and JSON code that fsharp-wasm-backend (FSharp.Wasm.Server) and
+fsharp-wasm-newsletter each had, both Apache-2.0 sources of this organisation.
+
+FSharp.Wasm.Ui/Ink.fs is a port to F# of the grid, the components and the stylesheet of Foundation for Emails
+(https://github.com/foundation/foundation-emails): its Sass sources (scss/) were read and their rules, numbers and table structure written as
+typed F#.  Foundation for Emails is Copyright (c) 2017 Foundation, inc. and licensed under the MIT License (LICENSES/MIT-foundation-for-emails.txt).

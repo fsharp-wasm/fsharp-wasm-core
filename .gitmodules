@@ -1,0 +1,3 @@
+[submodule "lib/wasmecto"]
+	path = lib/wasmecto
+	url = ../fsharp-wasmecto

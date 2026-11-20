@@ -20,6 +20,23 @@ FSharp.Wasm.Core/
 tests/FSharp.WasmCore.Tests/          Expecto tests, run under .NET (dotnet run --project tests/FSharp.WasmCore.Tests)
 ```
 
+## The standard libraries beside it
+
+The base library is the `System.*` surface. Next to it are the libraries that every program of the platform needs and that were
+written twice, or would be: each is a project of its own, **without dependencies**, runs under .NET and as WasmGC, and is tested both ways
+(`tests/FSharp.Wasm.Libs.Tests`, written with [Wasmecto](https://github.com/fsharp-wasm/fsharp-wasmecto)).
+
+| project | what it is |
+|---|---|
+| `FSharp.Wasm.Data` | `Json` (a value type, a writer, a pretty printer, a parser that reports the position of the first problem, bounded nesting, no exceptions) and `Numbers` (integer and float parsing by the JSON grammar, no `TryParse`) — what the backend and the newsletter each had |
+| `FSharp.Wasm.Ui` | typed CSS and HTML for the web and for email: `Color` (hex, hsl, oklch, WCAG contrast), `Style` (typed values, selectors, rules, merging, rendering), `Html` (a document tree that is data), `Inline` (an inliner), `Ink` (the grid and components of Foundation for Emails, MIT, as F#) — see its README section in fsharp-wasm-newsletter's `docs/ui.md` |
+
+```bash
+git submodule update --init lib/wasmecto
+bash build/test.sh dotnet            # under .NET
+FSHARP_WASM_DIR=/path/to/fsharp-wasm bash build/test.sh wasm   # compiled to WasmGC and run in Node (also a gate of the compiler's CI)
+```
+
 ## Use it
 
 ```xml

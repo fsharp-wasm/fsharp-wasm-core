@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Tests of FSharp.Wasm.Data and FSharp.Wasm.Ui, written with Wasmecto.  Tests: `bash build/test.sh dotnet`; WasmTests: compiled by fsharp-wasm (`bash build/test.sh wasm`). -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>preview</LangVersion>
+    <NuGetAudit>false</NuGetAudit>
+    <NoWarn>$(NoWarn);NU1900;NETSDK1188</NoWarn>
+    <FSHARP_WASM_CORE_DIR Condition="'$(FSHARP_WASM_CORE_DIR)' == ''">$(MSBuildThisFileDirectory)../..</FSHARP_WASM_CORE_DIR>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="DataTests.fs" />
+    <Compile Include="UiTests.fs" />
+    <Compile Include="Program.fs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../FSharp.Wasm.Data/FSharp.Wasm.Data.fsproj" />
+    <ProjectReference Include="../../FSharp.Wasm.Ui/FSharp.Wasm.Ui.fsproj" />
+    <ProjectReference Include="../../lib/wasmecto/src/Wasmecto.fsproj" />
+  </ItemGroup>
+</Project>
