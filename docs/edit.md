@@ -74,8 +74,9 @@ sends to a client; it has no move and no inverse. The mapping, to be built in th
 The transport (WebSocket, SSE, fetch) and the client's shadow are fsharp-wasm-edge's. A history, undo included, stays on the client; what goes over the wire
 is the operation, so that a second client can apply it. Nothing of this is built yet.
 
-## Known limits of the compiler that shaped the code
+## What compiling it found
 
-Written down in the compiler's `docs/STATUS.md` (2026-11-21): a closure inside a generic function that mentions the type parameter in an option of a tuple
-gets another instantiation than the call (`illegal cast`), so the steps of `Ops` are top-level functions applied in part; and two private functions of the
-same name in different files, one generic, are mixed up (the test helper of this library is called `render`, not `show`, because Wasmecto has a `show`).
+The library is also a test of the compiler: it is compiled as a referenced project of the test module (the Dogfood suite `core-libs` of fsharp-wasm). Two faults
+showed up, and both were fixed in the compiler rather than written around here (fsharp-wasm `docs/STATUS.md`, 2026-11-21): a lambda in an argument whose type
+variable only the callee fixes (the `put` steps of `Ops`) was compiled with an `int` for it, and a private `show` of a test file was taken for the generic `show`
+of Wasmecto. The code reads the way one writes it, and that gate keeps both from coming back.
