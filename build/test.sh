@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# test.sh — the suites of FSharp.Wasm.Data, FSharp.Wasm.Ui and FSharp.Wasm.Edit, twice: under .NET, and compiled to WebAssembly GC and run in Node.
+# test.sh — the suites of FSharp.Wasm.Data, FSharp.Wasm.Ui, FSharp.Wasm.Edit and FSharp.Wasm.Icons, twice: under .NET, and compiled to WebAssembly GC and run in Node.
 #
 #   bash build/test.sh            both
 #   bash build/test.sh dotnet     only the .NET run

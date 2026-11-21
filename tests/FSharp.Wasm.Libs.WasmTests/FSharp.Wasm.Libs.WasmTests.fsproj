@@ -12,12 +12,14 @@
     <Compile Include="../FSharp.Wasm.Libs.Tests/DataTests.fs" />
     <Compile Include="../FSharp.Wasm.Libs.Tests/UiTests.fs" />
     <Compile Include="../FSharp.Wasm.Libs.Tests/EditTests.fs" />
+    <Compile Include="../FSharp.Wasm.Libs.Tests/IconsTests.fs" />
     <Compile Include="WasmTests.fs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="../../FSharp.Wasm.Data/FSharp.Wasm.Data.fsproj" />
     <ProjectReference Include="../../FSharp.Wasm.Ui/FSharp.Wasm.Ui.fsproj" />
     <ProjectReference Include="../../FSharp.Wasm.Edit/FSharp.Wasm.Edit.fsproj" />
+    <ProjectReference Include="../../FSharp.Wasm.Icons/FSharp.Wasm.Icons.fsproj" />
     <ProjectReference Include="../../lib/wasmecto/src/Wasmecto.fsproj" />
   </ItemGroup>
 </Project>

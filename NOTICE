@@ -17,3 +17,7 @@ fsharp-wasm-newsletter each had, both Apache-2.0 sources of this organisation.
 FSharp.Wasm.Ui/Ink.fs is a port to F# of the grid, the components and the stylesheet of Foundation for Emails
 (https://github.com/foundation/foundation-emails): its Sass sources (scss/) were read and their rules, numbers and table structure written as
 typed F#.  Foundation for Emails is Copyright (c) 2017 Foundation, inc. and licensed under the MIT License (LICENSES/MIT-foundation-for-emails.txt).
+
+FSharp.Wasm.Icons/Lucide.fs is generated from the icons of Lucide (https://lucide.dev, lucide-static 1.77.0): Copyright (c) 2026 Lucide Icons and Contributors, ISC License;
+the icons that Lucide took over from Feather (among them plus, x, check, arrow-up, arrow-down, trash-2, chevron-down, code, monitor, smartphone, minus, info, link, download, upload)
+are Copyright (c) 2013-present Cole Bemis, MIT License.  Both texts are in LICENSES/ISC-MIT-lucide.txt; both are compatible with the Apache License 2.0 of this repository.

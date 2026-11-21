@@ -1,0 +1,58 @@
+# The icons of Lucide (https://lucide.dev) that the platform uses; one name per line, as the file in lucide-static's icons/ is called.
+# Add a name, run tools/icons/generate.mjs (see its header), commit FSharp.Wasm.Icons/Lucide.fs.
+# blocks of a newsletter
+heading
+text
+image
+mouse-pointer-click
+quote
+minus
+move-vertical
+columns-2
+panel-bottom
+layout-template
+# doing something
+plus
+x
+trash-2
+copy
+arrow-up
+arrow-down
+undo-2
+redo-2
+grip-vertical
+pencil
+move
+hand
+lock
+lock-open
+# looking at something
+eye
+code
+monitor
+smartphone
+mail
+globe
+palette
+settings
+layers
+# saying something
+check
+triangle-alert
+circle-alert
+info
+chevron-down
+chevron-right
+link
+download
+upload
+file-json
+# drawing, for the widget editor
+mouse-pointer-2
+square
+circle
+align-left
+align-center
+align-right
+bold
+italic
