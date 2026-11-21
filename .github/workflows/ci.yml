@@ -35,7 +35,7 @@ jobs:
       - name: Run Expecto tests
         run: dotnet test tests/FSharp.WasmCore.Tests/FSharp.WasmCore.Tests.fsproj -c Release --logger "console;verbosity=normal"
 
-  # The standard libraries beside the base library — FSharp.Wasm.Data (JSON, numbers) and FSharp.Wasm.Ui (typed CSS and HTML, the email grid) —
+  # The standard libraries beside the base library — FSharp.Wasm.Data (JSON, numbers), FSharp.Wasm.Ui (typed CSS and HTML, the email grid) and FSharp.Wasm.Edit (operations on a document, history) —
   # tested under .NET.  The WebAssembly GC run of the same suites is a gate of the compiler's CI (tests/run-all.sh, suite `core-libs`).
   libs:
     runs-on: ubuntu-latest

@@ -30,6 +30,7 @@ written twice, or would be: each is a project of its own, **without dependencies
 |---|---|
 | `FSharp.Wasm.Data` | `Json` (a value type, a writer, a pretty printer, a parser that reports the position of the first problem, bounded nesting, no exceptions) and `Numbers` (integer and float parsing by the JSON grammar, no `TryParse`) — what the backend and the newsletter each had; both build on it now (`FSharp.Wasm.Server`, `Newsletter.Core`) |
 | `FSharp.Wasm.Ui` | typed CSS and HTML for the web and for email: `Color` (hex, hsl, oklch, WCAG contrast), `Style` (typed values, selectors, rules, merging, rendering), `Html` (a document tree that is data), `Inline` (an inliner), `Ink` (the grid and components of Foundation for Emails, MIT, as F#) — see [docs/ui.md](docs/ui.md) |
+| `FSharp.Wasm.Edit` | the edits of a document as data: operations on a tree that have an inverse (insert, remove, move, replace, many), `drop` (where a drop lands, with the shift of indices a move needs), a history that folds typing into one step, and an edit in place. No geometry, so the DOM and the canvas share it — see [docs/edit.md](docs/edit.md) |
 
 ```bash
 git submodule update --init lib/wasmecto
@@ -56,6 +57,7 @@ itself — `FSHARP_WASM_CORE_DIR`, else the `core/` checkout inside its reposito
 | | |
 |---|---|
 | the compiler | [fsharp-wasm](https://github.com/fsharp-wasm/fsharp-wasm) — `src/Bcl` holds the helpers that are built *by* the compiler (strings, StringBuilder, formatting), this repository the ones written *in F#* |
+| merging what exists twice | [docs/consolidation.md](docs/consolidation.md) |
 | BCL coverage | `docs/bcl-surface.md`, and `docs/bcl-coverage.md` of the compiler |
 
 ## License

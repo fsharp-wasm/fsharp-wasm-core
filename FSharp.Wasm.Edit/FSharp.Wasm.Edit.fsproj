@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- FSharp.Wasm.Edit: the edits of a document as data — operations that can be undone, where a drop lands, a history, and an edit in place.
+       No geometry and no rendering, so the DOM (the newsletter) and the canvas (the widget editor) share it; no dependencies, it runs under .NET
+       and as WasmGC.  The wire format of these operations is GGBP in fsharp-wasm-backend (Ghost), carried by fsharp-wasm-edge: see docs/edit.md. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>preview</LangVersion>
+    <RootNamespace>FSharp.Wasm.Edit</RootNamespace>
+    <PackageId>FSharp.Wasm.Edit</PackageId>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/fsharp-wasm/fsharp-wasm-core</RepositoryUrl>
+    <NuGetAudit>false</NuGetAudit>
+    <NoWarn>$(NoWarn);NU1900;NETSDK1188</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Edit.fs" />
+  </ItemGroup>
+</Project>

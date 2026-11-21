@@ -5,6 +5,8 @@ All notable changes to this project are documented here.
 ## [Unreleased]
 
 ### Added
+- `FSharp.Wasm.Edit`: the edits of a document as data (operations with inverses, `Ops.drop`, `History`, `Inline`), 15 tests under .NET and as WasmGC; docs/edit.md.
+- docs/consolidation.md: how a copy is merged without breaking anyone and without losing anything.
 - The F# base library of fsharp-wasm as its own repository, moved from `fable-library-wasmgc/` of the compiler repository:
   `FSharp.Wasm.Core` (Interop, Option, Result, Map, Set, System.Collections.Generic, ListHelpers, MathHelpers) with one compile
   list (`FSharp.Wasm.Core.props`) that replaces the two the compiler repository kept (`Fable.LibraryWasmGc.fsproj`,
