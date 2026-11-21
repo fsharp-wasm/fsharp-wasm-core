@@ -61,40 +61,22 @@ module Ops =
                 | None -> None
                 | Some (kids, taken) -> Some (replaceAt i (shape.WithKids parent kids) items, taken)
 
-    let rec private getIn (shape: Shape<'i>) (path: Path) (items: 'i list) : 'i option =
-        match path with
-        | [] -> None
-        | [ i ] -> nth i items
-        | i :: rest ->
-            (match nth i items with
-             | Some x -> getIn shape rest (shape.Kids x)
-             | None -> None)
-
     /// The item at a path.
-    let get (shape: Shape<'i>) (path: Path) (roots: 'i list) : 'i option = getIn shape path roots
-
-    // The steps `within` is given are top-level functions applied in part, not closures inside a generic function: the compiler gives a closure
-    // that mentions the type parameter in an option of a tuple another instantiation than the call has (see STATUS.md, 2026-11-21).
-    let private putAt (item: 'i) (items: 'i list) (i: int) : ('i list * 'i option) option =
-        if i < 0 || i > List.length items then None else Some (insertAt i item items, None)
-
-    let private takeAt (items: 'i list) (i: int) : ('i list * 'i option) option =
-        match nth i items with
-        | Some x -> Some (removeAt i items, Some x)
-        | None -> None
-
-    let private swapAt (after: 'i) (items: 'i list) (i: int) : ('i list * 'i option) option =
-        match nth i items with
-        | Some _ -> Some (replaceAt i after items, None)
-        | None -> None
+    let get (shape: Shape<'i>) (path: Path) (roots: 'i list) : 'i option =
+        let rec go (p: Path) (items: 'i list) : 'i option =
+            match p with
+            | [] -> None
+            | [ i ] -> nth i items
+            | i :: rest -> (match nth i items with Some x -> go rest (shape.Kids x) | None -> None)
+        go path roots
 
     let private insertInto (shape: Shape<'i>) (at: Path) (item: 'i) (roots: 'i list) : 'i list option =
-        match within shape at (putAt item) roots with
-        | Some (r, _) -> Some r
-        | None -> None
+        let put (items: 'i list) (i: int) = if i < 0 || i > List.length items then None else Some (insertAt i item items, None)
+        within shape at put roots |> Option.map fst
 
     let private takeOut (shape: Shape<'i>) (at: Path) (roots: 'i list) : ('i list * 'i) option =
-        match within shape at takeAt roots with
+        let take (items: 'i list) (i: int) = (match nth i items with Some x -> Some (removeAt i items, Some x) | None -> None)
+        match within shape at take roots with
         | Some (rest, Some item) -> Some (rest, item)
         | _ -> None
 
@@ -106,7 +88,8 @@ module Ops =
         | Remove (at, _) ->
             (match takeOut shape at roots with Some (r, _) -> Ok r | None -> Error "remove: there is no such item")
         | Replace (at, _, after) ->
-            (match within shape at (swapAt after) roots with Some (r, _) -> Ok r | None -> Error "replace: there is no such item")
+            let put (items: 'i list) (i: int) = (match nth i items with Some _ -> Some (replaceAt i after items, None) | None -> None)
+            (match within shape at put roots with Some (r, _) -> Ok r | None -> Error "replace: there is no such item")
         | Move (source, target) ->
             (match takeOut shape source roots with
              | None -> Error "move: there is no such item"
@@ -132,15 +115,11 @@ module Ops =
 
     /// The operation that removes the item at `path` (read from the document, so that it can be undone).
     let remove (shape: Shape<'i>) (path: Path) (roots: 'i list) : Op<'i> option =
-        match get shape path roots with
-        | Some item -> Some (Remove (path, item))
-        | None -> None
+        get shape path roots |> Option.map (fun item -> Remove (path, item))
 
     /// The operation that changes the item at `path` with `f`.
     let change (shape: Shape<'i>) (path: Path) (f: 'i -> 'i) (roots: 'i list) : Op<'i> option =
-        match get shape path roots with
-        | Some item -> Some (Replace (path, item, f item))
-        | None -> None
+        get shape path roots |> Option.map (fun item -> Replace (path, item, f item))
 
     let private insertPath (shape: Shape<'i>) (place: Place) (roots: 'i list) : Path option =
         match place with

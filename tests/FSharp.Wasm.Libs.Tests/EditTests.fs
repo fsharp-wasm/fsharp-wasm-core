@@ -14,8 +14,8 @@ let private branch (n: string) (k: Node list) : Node = { Name = n; Sub = k }
 /// a  b( c  d( e ) )  f
 let private doc : Node list = [ leaf "a"; branch "b" [ leaf "c"; branch "d" [ leaf "e" ] ]; leaf "f" ]
 
-let rec private render (items: Node list) : string =
-    items |> List.map (fun n -> if List.isEmpty n.Sub then n.Name else n.Name + "(" + render n.Sub + ")") |> String.concat " "
+let rec private show (items: Node list) : string =
+    items |> List.map (fun n -> if List.isEmpty n.Sub then n.Name else n.Name + "(" + show n.Sub + ")") |> String.concat " "
 
 let rec private paths (prefix: Path) (items: Node list) : Path list =
     items |> List.mapi (fun i n -> (prefix @ [ i ]) :: paths (prefix @ [ i ]) n.Sub) |> List.concat
@@ -36,10 +36,10 @@ let private next (s: int) : int = (s * 1103515245 + 12345) &&& 0x7fffffff
 let operations =
     testList "Operations" [
         testCase "insert, remove and replace, at the top and nested" <| fun () ->
-            Expect.equal (render (ok (Ops.apply shape (Insert ([ 1; 1 ], leaf "x")) doc))) "a b(c x d(e)) f" "insert nested"
-            Expect.equal (render (ok (Ops.apply shape (Insert ([ 3 ], leaf "x")) doc))) "a b(c d(e)) f x" "insert at the end"
-            Expect.equal (render (ok (Ops.apply shape (Remove ([ 1; 1; 0 ], leaf "e")) doc))) "a b(c d) f" "remove the only child"
-            Expect.equal (render (ok (Ops.apply shape (Replace ([ 1; 0 ], leaf "c", leaf "z")) doc))) "a b(z d(e)) f" "replace"
+            Expect.equal (show (ok (Ops.apply shape (Insert ([ 1; 1 ], leaf "x")) doc))) "a b(c x d(e)) f" "insert nested"
+            Expect.equal (show (ok (Ops.apply shape (Insert ([ 3 ], leaf "x")) doc))) "a b(c d(e)) f x" "insert at the end"
+            Expect.equal (show (ok (Ops.apply shape (Remove ([ 1; 1; 0 ], leaf "e")) doc))) "a b(c d) f" "remove the only child"
+            Expect.equal (show (ok (Ops.apply shape (Replace ([ 1; 0 ], leaf "c", leaf "z")) doc))) "a b(z d(e)) f" "replace"
         testCase "a place that does not exist is an error and changes nothing" <| fun () ->
             let bad (r: Result<Node list, string>) = (match r with Error _ -> true | Ok _ -> false)
             Expect.isTrue (bad (Ops.apply shape (Insert ([ 9 ], leaf "x")) doc)) "insert past the end"
@@ -48,15 +48,15 @@ let operations =
             Expect.isTrue (bad (Ops.apply shape (Replace ([ 1; 5 ], leaf "q", leaf "r")) doc)) "replace nothing"
             Expect.isTrue (bad (Ops.apply shape (Move ([ 7 ], [ 0 ])) doc)) "move nothing"
         testCase "a move takes the item out and puts it where the target reads without it" <| fun () ->
-            Expect.equal (render (ok (Ops.apply shape (Move ([ 0 ], [ 2 ])) doc))) "b(c d(e)) f a" "to the end"
-            Expect.equal (render (ok (Ops.apply shape (Move ([ 2 ], [ 0 ])) doc))) "f a b(c d(e))" "to the front"
-            Expect.equal (render (ok (Ops.apply shape (Move ([ 1; 0 ], [ 0 ])) doc))) "c a b(d(e)) f" "out of a parent"
-            Expect.equal (render (ok (Ops.apply shape (Move ([ 0 ], [ 0; 0 ])) doc))) "b(a c d(e)) f" "into a sibling, which shifted"
+            Expect.equal (show (ok (Ops.apply shape (Move ([ 0 ], [ 2 ])) doc))) "b(c d(e)) f a" "to the end"
+            Expect.equal (show (ok (Ops.apply shape (Move ([ 2 ], [ 0 ])) doc))) "f a b(c d(e))" "to the front"
+            Expect.equal (show (ok (Ops.apply shape (Move ([ 1; 0 ], [ 0 ])) doc))) "c a b(d(e)) f" "out of a parent"
+            Expect.equal (show (ok (Ops.apply shape (Move ([ 0 ], [ 0; 0 ])) doc))) "b(a c d(e)) f" "into a sibling, which shifted"
         testCase "many operations are done in order, and undone in the reverse order" <| fun () ->
             let op = Many [ Insert ([ 0 ], leaf "x"); Move ([ 0 ], [ 3 ]); Replace ([ 0 ], leaf "a", leaf "A") ]
             let after = ok (Ops.apply shape op doc)
-            Expect.equal (render after) "A b(c d(e)) f x" "forward"
-            Expect.equal (render (ok (Ops.apply shape (Ops.invert op) after))) (render doc) "back"
+            Expect.equal (show after) "A b(c d(e)) f x" "forward"
+            Expect.equal (show (ok (Ops.apply shape (Ops.invert op) after))) (show doc) "back"
             Expect.equal (Ops.invert (Ops.invert op)) op "invert twice is the operation"
         testCase "random operations are all undone by their inverse (3000 steps)" <| fun () ->
             let mutable seed = 12345
@@ -138,8 +138,8 @@ let drops =
         testCase "dropping into a branch appends, and a move back restores the document" <| fun () ->
             let op = Ops.drop shape [ 0 ] (Into [ 1 ]) doc
             let d2 = ok (Ops.apply shape (Option.get op) doc)
-            Expect.equal (render d2) "b(c d(e) a) f" "last child"
-            Expect.equal (render (ok (Ops.apply shape (Ops.invert (Option.get op)) d2))) (render doc) "undone"
+            Expect.equal (show d2) "b(c d(e) a) f" "last child"
+            Expect.equal (show (ok (Ops.apply shape (Ops.invert (Option.get op)) d2))) (show doc) "undone"
     ]
 
 let history =
@@ -148,15 +148,15 @@ let history =
             let h0 : History<Node> = History.create 50
             let (d1, h1) = (match History.commit shape "" (Insert ([ 0 ], leaf "x")) doc h0 with Ok r -> r | Error e -> failwith e)
             let (d2, h2) = (match History.commit shape "" (Remove ([ 3 ], leaf "f")) d1 h1 with Ok r -> r | Error e -> failwith e)
-            Expect.equal (render d2) "x a b(c d(e))" "two edits"
+            Expect.equal (show d2) "x a b(c d(e))" "two edits"
             let (u1, h3) = Option.get (History.undo shape d2 h2)
-            Expect.equal (render u1) "x a b(c d(e)) f" "undo the removal"
+            Expect.equal (show u1) "x a b(c d(e)) f" "undo the removal"
             let (u2, h4) = Option.get (History.undo shape u1 h3)
-            Expect.equal (render u2) (render doc) "undo the insertion"
+            Expect.equal (show u2) (show doc) "undo the insertion"
             Expect.isFalse (History.canUndo h4) "nothing left to undo"
             let (r1, h5) = Option.get (History.redo shape u2 h4)
             let (r2, h6) = Option.get (History.redo shape r1 h5)
-            Expect.equal (render r2) (render d2) "both redone"
+            Expect.equal (show r2) (show d2) "both redone"
             Expect.isFalse (History.canRedo h6) "nothing left to redo"
         testCase "a new edit ends the future" <| fun () ->
             let h0 : History<Node> = History.create 50
@@ -175,7 +175,7 @@ let history =
             let (d3, h3) = typeInto "a123" d2 h2
             Expect.equal (List.length h3.Past) 1 "three keystrokes, one step"
             let (u, h4) = Option.get (History.undo shape d3 h3)
-            Expect.equal (render u) (render doc) "one undo takes back all of them"
+            Expect.equal (show u) (show doc) "one undo takes back all of them"
             let (d5, h5) = typeInto "b1" u h4
             let (_, h6) = typeInto "b12" d5 h5
             Expect.equal (List.length h6.Past) 1 "typing after an undo is a step of its own, folded only with itself"
@@ -213,8 +213,8 @@ let inlineEdit =
             Expect.equal op (Replace ([ 0 ], leaf "a", leaf "alpha")) "a replace of what was there"
             let h0 : History<Node> = History.create 10
             let (d1, h1) = (match History.commit shape "" op doc h0 with Ok r -> r | Error e -> failwith e)
-            Expect.equal (render d1) "alpha b(c d(e)) f" "applied"
-            Expect.equal (render (fst (Option.get (History.undo shape d1 h1)))) (render doc) "undone"
+            Expect.equal (show d1) "alpha b(c d(e)) f" "applied"
+            Expect.equal (show (fst (Option.get (History.undo shape d1 h1)))) (show doc) "undone"
     ]
 
 let suites : Test list = [ operations; drops; history; inlineEdit ]
