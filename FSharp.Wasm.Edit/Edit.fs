@@ -33,10 +33,10 @@ module Ops =
         | [] -> None
         | x :: rest -> if i < 0 then None elif i = 0 then Some x else nth (i - 1) rest
 
-    let rec private insertAt (i: int) (x: 'a) (xs: 'a list) : 'a list =
+    let rec private insertIndex (i: int) (x: 'a) (xs: 'a list) : 'a list =
         match xs with
         | [] -> [ x ]
-        | h :: t -> if i <= 0 then x :: xs else h :: insertAt (i - 1) x t
+        | h :: t -> if i <= 0 then x :: xs else h :: insertIndex (i - 1) x t
 
     let rec private removeAt (i: int) (xs: 'a list) : 'a list =
         match xs with
@@ -71,7 +71,7 @@ module Ops =
         go path roots
 
     let private insertInto (shape: Shape<'i>) (at: Path) (item: 'i) (roots: 'i list) : 'i list option =
-        let put (items: 'i list) (i: int) = if i < 0 || i > List.length items then None else Some (insertAt i item items, None)
+        let put (items: 'i list) (i: int) = if i < 0 || i > List.length items then None else Some (insertIndex i item items, None)
         within shape at put roots |> Option.map fst
 
     let private takeOut (shape: Shape<'i>) (at: Path) (roots: 'i list) : ('i list * 'i) option =
@@ -132,6 +132,12 @@ module Ops =
             (match get shape p roots with
              | Some parent -> Some (p @ [ List.length (shape.Kids parent) ])
              | None -> None)
+
+    /// The insert that puts a new item at `place`, read in the document as it is now.  None when there is no such place: a view shows no drop mark for it.
+    let insertAt (shape: Shape<'i>) (place: Place) (item: 'i) (roots: 'i list) : Op<'i> option =
+        insertPath shape place roots
+        |> Option.map (fun at -> Insert (at, item))
+        |> Option.filter (fun op -> match apply shape op roots with Ok _ -> true | Error _ -> false)
 
     /// A position given for the document as it is, as it reads once the moved item is out: the indices after it shift down by one, and a place
     /// inside the item itself is none at all.

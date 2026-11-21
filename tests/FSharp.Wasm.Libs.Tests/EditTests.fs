@@ -135,6 +135,30 @@ let drops =
             Expect.isNone (Ops.drop shape [ 1 ] (After [ 1; 1; 0 ]) doc) "next to its own grandchild"
             Expect.isNone (Ops.drop shape [ 9 ] (Before [ 0 ]) doc) "no such item"
             Expect.isSome (Ops.drop shape [ 0 ] (After [ 1 ]) doc) "after the next one: a real move"
+        testCase "a new item lands before, after or into its target" <| fun () ->
+            let fresh = leaf "new"
+            let all = paths [] doc
+            let mutable wrong = 0
+            for target in all do
+                for place in [ Before target; After target; Into target ] do
+                    match Ops.insertAt shape place fresh doc, Ops.get shape target doc with
+                    | Some op, Some anchor ->
+                        let d2 = ok (Ops.apply shape op doc)
+                        let pn, pa = pathOf "new" d2, pathOf anchor.Name d2
+                        let placed =
+                            match pn, pa, place with
+                            | Some pn, Some pa, Before _ -> List.truncate (List.length pn - 1) pn = List.truncate (List.length pa - 1) pa && List.last pn + 1 = List.last pa
+                            | Some pn, Some pa, After _ -> List.truncate (List.length pn - 1) pn = List.truncate (List.length pa - 1) pa && List.last pn = List.last pa + 1
+                            | Some pn, Some pa, Into _ -> List.truncate (List.length pn - 1) pn = pa
+                            | _ -> false
+                        if not (placed && List.length (names d2) = List.length (names doc) + 1 && show (ok (Ops.apply shape (Ops.invert op) d2)) = show doc) then wrong <- wrong + 1
+                    | _ -> wrong <- wrong + 1
+            Expect.equal wrong 0 "every place took the new item where it said, and the insert undoes"
+            Expect.isNone (Ops.insertAt shape (Before [ 9 ]) fresh doc) "no such item to put it before"
+            Expect.isNone (Ops.insertAt shape (After [ 1; 9 ]) fresh doc) "no such sibling"
+            Expect.isNone (Ops.insertAt shape (Into [ 7 ]) fresh doc) "no such parent"
+            Expect.equal (show (ok (Ops.apply shape (Option.get (Ops.insertAt shape (After [ 2 ]) fresh doc)) doc))) "a b(c d(e)) f new" "behind the last one"
+            Expect.equal (show (ok (Ops.apply shape (Option.get (Ops.insertAt shape (Into [ 1 ]) fresh doc)) doc))) "a b(c d(e) new) f" "into a branch appends"
         testCase "dropping into a branch appends, and a move back restores the document" <| fun () ->
             let op = Ops.drop shape [ 0 ] (Into [ 1 ]) doc
             let d2 = ok (Ops.apply shape (Option.get op) doc)

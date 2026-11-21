@@ -34,6 +34,9 @@ the inverse exact (`Move (target, source)`), but it is not what a view knows: a 
 - a place inside the item itself (`Into` itself, next to its own grandchild) is **none**, and so is a drop that changes nothing
   (`Before` the next sibling): a view shows no drop mark for a place that gives `None`.
 
+`Ops.insertAt shape place item roots` is the same for a new item (dragged from a palette): the `Insert` for that place, or none when there is no such place. It has no
+shift to think of, because nothing is taken out.
+
 A test tries every source against every target with every kind of place on a tree and checks that each drop that is possible ends where it said.
 
 ## History
