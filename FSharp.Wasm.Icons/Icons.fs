@@ -43,10 +43,9 @@ module Icons =
         | Polygon ps -> "polygon", [ "points", points ps ]
 
     /// The attributes of the `svg` element that draws an icon at `size` pixels: the grid as its view box, and how it is stroked.  Decorative by default (`aria-hidden`):
-    /// the control around an icon carries the name.
+    /// the control around an icon carries the name.  No `xmlns`: an element of a DOM view is in the SVG namespace already; `svg`, the markup, adds it.
     let svgAttributes (size: int) : (string * string) list =
-        [ "xmlns", "http://www.w3.org/2000/svg"
-          "width", string size
+        [ "width", string size
           "height", string size
           "viewBox", "0 0 " + number grid + " " + number grid
           "fill", "none"
@@ -66,4 +65,4 @@ module Icons =
         icon.Shapes
         |> List.map (fun s -> let tag, attrs = element s in markup tag attrs "")
         |> String.concat ""
-        |> markup "svg" (svgAttributes size)
+        |> markup "svg" (("xmlns", "http://www.w3.org/2000/svg") :: svgAttributes size)

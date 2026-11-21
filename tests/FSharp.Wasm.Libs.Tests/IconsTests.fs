@@ -41,6 +41,8 @@ let suites : Test list = [
                 (Icons.svg 16 Lucide.plus)
                 "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\" focusable=\"false\"><path d=\"M5 12h14\"/><path d=\"M12 5v14\"/></svg>"
                 "plus"
+            Expect.isFalse (Icons.svgAttributes 16 |> List.exists (fun (k, _) -> k = "xmlns")) "the attributes of a DOM element have no xmlns: it is in the SVG namespace already"
+            Expect.equal (Icons.svgAttributes 16 |> List.find (fun (k, _) -> k = "viewBox") |> snd) "0 0 24 24" "but the grid as its view box"
             Expect.equal (Icons.element (Circle (9.0, 12.5, 1.0))) ("circle", [ "cx", "9"; "cy", "12.5"; "r", "1" ]) "a circle"
             Expect.equal (Icons.element (Rect (3.0, 4.0, 18.0, 16.0, 0.0))) ("rect", [ "x", "3"; "y", "4"; "width", "18"; "height", "16" ]) "a rect without corners has no rx"
             Expect.equal (Icons.element (Rect (3.0, 4.0, 18.0, 16.0, 2.0)) |> snd |> List.last) ("rx", "2") "a rounded one has"
