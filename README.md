@@ -1,5 +1,9 @@
 # fsharp-wasm-core
 
+<!-- platform -->
+> **Part of the [fsharp-wasm platform](https://fsharp-wasm.github.io/projects/)**: base libraries. Builds on nothing of ours (the lowest layer). Used by [graphics](https://github.com/fsharp-wasm/fsharp-wasm-graphics), [runtime](https://github.com/fsharp-wasm/fsharp-wasm-runtime), [ide](https://github.com/fsharp-wasm/fsharp-wasm-ide), [newsletter](https://github.com/fsharp-wasm/fsharp-wasm-newsletter), [backend](https://github.com/fsharp-wasm/fsharp-wasm-backend).
+> [All projects](https://fsharp-wasm.github.io/projects/) · [Roadmap](https://fsharp-wasm.github.io/docs/roadmap/) · [Tests](https://fsharp-wasm.github.io/tests/) · [Benchmarks](https://fsharp-wasm.github.io/benchmarks/) · [Live demos](https://fsharp-wasm.github.io/demos/)
+
 The F# base library of programs compiled by [fsharp-wasm](https://github.com/fsharp-wasm/fsharp-wasm) to WebAssembly GC.
 
 It is **source-only**: a program compiles these files together with its own — they are F#, not a binary dependency — and the
