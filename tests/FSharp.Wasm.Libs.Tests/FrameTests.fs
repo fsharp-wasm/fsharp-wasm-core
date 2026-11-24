@@ -172,6 +172,15 @@ let format =
             Expect.equal (Format.amount 1000.0) "1,000.00" "four digits"
             Expect.equal (Format.amount 12345678901.23) "12,345,678,901.23" "billions"
             Expect.equal (Format.amount nan) "–" "not a number"
+        testCase "counts and times" <| fun () ->
+            Expect.equal (Format.count 0L) "0" "zero"
+            Expect.equal (Format.count 999L) "999" "no comma"
+            Expect.equal (Format.count 1000000L) "1,000,000" "a million"
+            Expect.equal (Format.count -12345L) "-12,345" "negative"
+            Expect.equal (Format.millis 3.44) "3.4" "one decimal"
+            Expect.equal (Format.millis 0.04) "0.0" "below a tenth"
+            Expect.equal (Format.millis 12.0) "12.0" "whole"
+            Expect.equal (Format.millis 99.96) "100.0" "rounds up across a ten"
     ]
 
 let suites = [ hierarchy; cube; format ]
