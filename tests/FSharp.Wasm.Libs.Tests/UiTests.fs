@@ -18,6 +18,17 @@ let color =
             // the oklch of sRGB red, as CSS Color 4 gives it
             let r, g, b = Color.ofOklch (0.62796, 0.25768, 29.23)
             Expect.isTrue (r >= 254 && g <= 2 && b <= 2) (sprintf "red: %d %d %d" r g b)
+        testCase "a colour outside sRGB is fitted by its chroma, not clipped" <| fun () ->
+            // the strongest red sRGB can show is in the gamut; a chroma well beyond it is not
+            Expect.isTrue (Color.oklchInGamut (0.62796, 0.25768, 29.23)) "sRGB red"
+            Expect.isFalse (Color.oklchInGamut (0.62796, 0.35, 29.23)) "too much chroma"
+            let l, c, h = Color.fitOklch (0.62796, 0.35, 29.23)
+            Expect.equal (l, h) (0.62796, 29.23) "lightness and hue stay"
+            Expect.isTrue (c > 0.25 && c < 0.27) (sprintf "the chroma is the gamut's: %f" c)
+            Expect.isTrue (Color.oklchInGamut (l, c, h)) "inside"
+            Expect.equal (Color.fitOklch (0.5, 0.1, 250.0)) (0.5, 0.1, 250.0) "a colour inside is left as it is"
+            // a grey has no chroma to give up; white and black are the ends of the lightness axis
+            Expect.equal (Color.fitOklch (1.0, 0.3, 0.0) |> fun (_, c, _) -> c < 0.01) true "white takes no chroma"
         testCase "an email gets hex, the web gets what was written" <| fun () ->
             Expect.equal (Color.css Email (Oklch(0.6, 0.15, 250.0))).[0] '#' "lowered"
             has (Color.css Web (Oklch(0.6, 0.15, 250.0))) "oklch(0.6 0.15 250)"

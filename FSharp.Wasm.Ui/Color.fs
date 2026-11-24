@@ -43,18 +43,40 @@ module Color =
         let c = float v / 255.0
         if c <= 0.03928 then c / 12.92 else Math.Pow((c + 0.055) / 1.055, 2.4)
 
-    /// Oklab/Oklch (Björn Ottosson) to sRGB, clipped to the gamut.
-    let ofOklch (l: float, c: float, h: float) : int * int * int =
+    /// Oklab/Oklch (Björn Ottosson) to linear sRGB, not clipped: a channel outside 0..1 says the colour is outside the gamut.
+    let private oklchLinear (l: float, c: float, h: float) : float * float * float =
         let rad = h * Math.PI / 180.0
         let a, b = c * Math.Cos rad, c * Math.Sin rad
         let l' = l + 0.3963377774 * a + 0.2158037573 * b
         let m' = l - 0.1055613458 * a - 0.0638541728 * b
         let s' = l - 0.0894841775 * a - 1.2914855480 * b
         let lc, mc, sc = l' * l' * l', m' * m' * m', s' * s' * s'
-        let r = 4.0767416621 * lc - 3.3077115913 * mc + 0.2309699292 * sc
-        let g = -1.2684380046 * lc + 2.6097574011 * mc - 0.3413193965 * sc
-        let bl = -0.0041960863 * lc - 0.7034186147 * mc + 1.7076147010 * sc
-        toByte (encode (clamp01 r)), toByte (encode (clamp01 g)), toByte (encode (clamp01 bl))
+        4.0767416621 * lc - 3.3077115913 * mc + 0.2309699292 * sc,
+        -1.2684380046 * lc + 2.6097574011 * mc - 0.3413193965 * sc,
+        -0.0041960863 * lc - 0.7034186147 * mc + 1.7076147010 * sc
+
+    /// Oklab/Oklch (Björn Ottosson) to sRGB, clipped to the gamut.
+    let ofOklch (l: float, c: float, h: float) : int * int * int =
+        let r, g, b = oklchLinear (l, c, h)
+        toByte (encode (clamp01 r)), toByte (encode (clamp01 g)), toByte (encode (clamp01 b))
+
+    /// True when sRGB can show the colour: nothing of `ofOklch` is clipped (half a step of 8 bits is allowed for rounding).
+    let oklchInGamut (l: float, c: float, h: float) : bool =
+        let r, g, b = oklchLinear (l, c, h)
+        let inside (x: float) = x >= -0.0005 && x <= 1.0005
+        inside r && inside g && inside b
+
+    /// The colour with the most chroma, up to `c`, that sRGB can show at this lightness and hue: the chroma is reduced and lightness and hue
+    /// stay (CSS Color 4 maps the gamut the same way, with a finer test).  Clipping a channel instead would turn the hue.
+    let fitOklch (l: float, c: float, h: float) : float * float * float =
+        if oklchInGamut (l, c, h) then l, c, h
+        else
+            let mutable lo = 0.0
+            let mutable hi = c
+            for _ in 1 .. 24 do
+                let mid = (lo + hi) / 2.0
+                if oklchInGamut (l, mid, h) then lo <- mid else hi <- mid
+            l, lo, h
 
     let ofHsl (h: float, s: float, l: float) : int * int * int =
         let hue = ((h % 360.0) + 360.0) % 360.0
