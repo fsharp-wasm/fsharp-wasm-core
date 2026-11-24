@@ -68,6 +68,15 @@ itself — `FSHARP_WASM_CORE_DIR`, else the `core/` checkout inside its reposito
 | merging what exists twice | [docs/consolidation.md](docs/consolidation.md) |
 | BCL coverage | `docs/bcl-surface.md`, and `docs/bcl-coverage.md` of the compiler |
 
+## Contributing
+
+Welcome. [CONTRIBUTING](https://github.com/fsharp-wasm/.github/blob/develop/CONTRIBUTING.md) is the organisation's guide and [AGENTS.md](AGENTS.md) says how the platform is worked on (the compiler comes first: a fault found here
+is fixed in the compiler, not worked around here).
+
+- **Run the tests:** `bash build/test.sh dotnet` (under .NET); `FSHARP_WASM_DIR=… bash build/test.sh wasm` (compiled to WasmGC and run in Node).
+- **A good first contribution:** A function that `FSharp.Core` has and this library lacks, written the natural way with a test that runs both ways. Issues labelled [`good first issue`](https://github.com/fsharp-wasm/fsharp-wasm-core/labels/good%20first%20issue) are the places to start.
+- **A change** goes to `develop` as a pull request, with a test that fails without it. Open an issue first for anything larger than a fix.
+
 ## License
 
 [Apache License 2.0](LICENSE). The sources moved here from fsharp-wasm (MIT) keep that notice in
