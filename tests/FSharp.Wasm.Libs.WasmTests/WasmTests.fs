@@ -4,6 +4,6 @@ module FSharp.Wasm.Libs.WasmTestsMain
 
 open Wasmecto.Runner
 
-do register (FSharp.Wasm.Libs.DataTests.suites @ FSharp.Wasm.Libs.UiTests.suites @ FSharp.Wasm.Libs.EditTests.suites @ FSharp.Wasm.Libs.IconsTests.suites)
+do register (FSharp.Wasm.Libs.DataTests.suites @ FSharp.Wasm.Libs.UiTests.suites @ FSharp.Wasm.Libs.EditTests.suites @ FSharp.Wasm.Libs.IconsTests.suites @ FSharp.Wasm.Libs.FrameTests.suites)
 
 let wasmecto_run () : int = runRegistered ()

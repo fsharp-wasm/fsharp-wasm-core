@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- FSharp.Wasm.Frame: tables of facts, summed along hierarchies — what a pivot table, a ledger report or a cost-centre view is made of.  Hierarchies of ordered leaves,
+       a cube of prefix sums over two of them (the total of any group, of rows and of columns, is one read), pivoting, drill-down to the facts, formulas over measures,
+       and the formatting of amounts.  Nothing to depend on; runs under .NET and as WasmGC and is tested both ways (tests/FSharp.Wasm.Libs.Tests). -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>preview</LangVersion>
+    <RootNamespace>FSharp.Wasm.Frame</RootNamespace>
+    <PackageId>FSharp.Wasm.Frame</PackageId>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/fsharp-wasm/fsharp-wasm-core</RepositoryUrl>
+    <NuGetAudit>false</NuGetAudit>
+    <NoWarn>$(NoWarn);NU1900;NETSDK1188</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Hierarchy.fs" />
+    <Compile Include="Cube.fs" />
+    <Compile Include="Format.fs" />
+  </ItemGroup>
+</Project>
