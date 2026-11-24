@@ -15,6 +15,7 @@
     <Compile Include="IconsTests.fs" />
     <Compile Include="FrameTests.fs" />
     <Compile Include="DesignTests.fs" />
+    <Compile Include="ActorsTests.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
   <ItemGroup>
@@ -23,6 +24,7 @@
     <ProjectReference Include="../../FSharp.Wasm.Edit/FSharp.Wasm.Edit.fsproj" />
     <ProjectReference Include="../../FSharp.Wasm.Frame/FSharp.Wasm.Frame.fsproj" />
     <ProjectReference Include="../../FSharp.Wasm.Design/FSharp.Wasm.Design.fsproj" />
+    <ProjectReference Include="../../FSharp.Wasm.Actors/FSharp.Wasm.Actors.fsproj" />
     <ProjectReference Include="../../FSharp.Wasm.Icons/FSharp.Wasm.Icons.fsproj" />
     <ProjectReference Include="../../lib/wasmecto/src/Wasmecto.fsproj" />
   </ItemGroup>
