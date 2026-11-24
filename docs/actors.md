@@ -27,7 +27,7 @@ and tells the state machine what happened. Nothing in the library starts a proce
 - every dispatch crashing, `MaxRestarts` 4: the pool gives up, is not done, and the simulation ends by itself (no endless restart loop);
 - a second answer, a job submitted twice, the jobs of a dead worker going to the others, and a late answer of a worker thought dead.
 
-89 tests (14 of them for Design, 12 for this library), under .NET and as WebAssembly GC, 2026-11-24.
+89 tests (13 of them for this library), under .NET and as WebAssembly GC, 2026-11-24.
 
 ## What it is not, yet
 
