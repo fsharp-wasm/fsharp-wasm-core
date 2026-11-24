@@ -12,6 +12,10 @@
     <NuGetAudit>false</NuGetAudit>
     <NoWarn>$(NoWarn);NU1900;NETSDK1188</NoWarn>
   </PropertyGroup>
+  <!-- the base library (Dictionary): a program that compiles this has it first in its compile list -->
+  <ItemGroup>
+    <ProjectReference Include="../FSharp.Wasm.Core/FSharp.Wasm.Core.fsproj" />
+  </ItemGroup>
   <ItemGroup>
     <Compile Include="Hierarchy.fs" />
     <Compile Include="Cube.fs" />

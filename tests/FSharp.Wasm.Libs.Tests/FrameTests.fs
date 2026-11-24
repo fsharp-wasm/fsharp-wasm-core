@@ -131,9 +131,7 @@ let cube =
             Expect.approxEqual (Cube.value c 0 0 0) everything 1e-6 "all facts"
             let leafRow = f.Dimensions.[0].Tree.LeafNodes.[2]
             let leafCol = f.Dimensions.[1].Tree.LeafNodes.[5]
-            let mutable direct = 0.0
-            for i in 0 .. f.Count - 1 do
-                if f.Dimensions.[0].Leaf.[i] = 2 && f.Dimensions.[1].Leaf.[i] = 5 then direct <- direct + f.Values.[0].[i]
+            let direct = Seq.zip f.Dimensions.[0].Leaf f.Dimensions.[1].Leaf |> Seq.mapi (fun i (a, b) -> if a = 2 && b = 5 then f.Values.[0].[i] else 0.0) |> Seq.sum
             Expect.approxEqual (Cube.value c 0 leafRow leafCol) direct 1e-9 "one cell"
         testCase "formulas are computed from the totals; a division by zero is not a number" <| fun () ->
             let f = facts 1500
