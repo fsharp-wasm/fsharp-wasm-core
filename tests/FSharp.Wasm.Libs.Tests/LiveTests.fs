@@ -106,7 +106,7 @@ let cubes =
             let f = ledger ()
             let axes = Source<int * int>(e, (0, 1), (fun a b -> fst a = fst b && snd a = snd b))
             let revision = Source<int>(e, 0, Same.int)
-            let cube = Cubes.pivotOver e f axes revision [||]
+            let cube = Cubes.pivotOver e f axes (fun () -> revision.Value) [||]
             Expect.equal (Cube.value cube.Value 0 0 0) 9.0 "nine ones"
             // line 0 is account 0 in month 0: it is 5 now
             f.Values.[0].[0] <- 5.0

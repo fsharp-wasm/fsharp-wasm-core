@@ -56,7 +56,7 @@ addressed by the item before the new one (so two inserts that did not see each o
 
 `Live.filter`, `Live.groupBy` and `Cubes.overlay` keep what they made. A column that only grew (an `Append`) costs the new rows; a new parameter, or a number that was there and changed (`Write`, `Truncate`, which
 change the column's epoch), is a scan of the whole. The `Rows` a filter makes carry the epoch, so a group over a filter knows whether it may add or has to count again. `Cubes.pivot` builds the cube for a pair
-of dimensions once per turn (`Cubes.pivotOver` also when a `revision` is raised: facts that are written into in place, a line of the ledger corrected, are told to the calc that way); `Cubes.overlay` writes a plan over one measure of it by `Cube.withLeaves`, only for the cells that changed.
+of dimensions once per turn (`Cubes.pivotOver` also when its `revision` reads another number: facts that are written into in place, a line of the ledger corrected, are told to the calc that way); `Cubes.overlay` writes a plan over one measure of it by `Cube.withLeaves`, only for the cells that changed.
 
 ## Not built yet
 
