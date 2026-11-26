@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- FSharp.Wasm.Telemetry: what a dashboard or a SCADA screen needs that is not drawing: the samples of a tag with their quality, the alarm of a tag as the state machine of ISA-18.2
+       (limits with a deadband and a delay, active / acknowledged / returned, escalation, shelving) and the compression of a history by deadband.  Pure functions of a sample and a
+       state; the effects (a horn, a log, a message) are the events they return.  Depends on the base library only; runs under .NET and as WasmGC and is tested both ways. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>preview</LangVersion>
+    <RootNamespace>FSharp.Wasm.Telemetry</RootNamespace>
+    <PackageId>FSharp.Wasm.Telemetry</PackageId>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/fsharp-wasm/fsharp-wasm-core</RepositoryUrl>
+    <NuGetAudit>false</NuGetAudit>
+    <NoWarn>$(NoWarn);NU1900;NETSDK1188</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../FSharp.Wasm.Core/FSharp.Wasm.Core.fsproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Alarm.fs" />
+    <Compile Include="Historian.fs" />
+  </ItemGroup>
+</Project>
