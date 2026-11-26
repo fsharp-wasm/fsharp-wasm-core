@@ -1,5 +1,9 @@
 # fsharp-wasm-core
 
+<!-- status -->
+[![CI](https://github.com/fsharp-wasm/fsharp-wasm-core/actions/workflows/ci.yml/badge.svg?branch=develop)](https://github.com/fsharp-wasm/fsharp-wasm-core/actions/workflows/ci.yml) · [Status of every repository](https://fsharp-wasm.github.io/status/)
+<!-- /status -->
+
 <!-- platform -->
 > **Part of the [fsharp-wasm platform](https://fsharp-wasm.github.io/projects/)**: base libraries. Builds on nothing of ours (the lowest layer). Used by [graphics](https://github.com/fsharp-wasm/fsharp-wasm-graphics), [runtime](https://github.com/fsharp-wasm/fsharp-wasm-runtime), [ide](https://github.com/fsharp-wasm/fsharp-wasm-ide), [newsletter](https://github.com/fsharp-wasm/fsharp-wasm-newsletter), [backend](https://github.com/fsharp-wasm/fsharp-wasm-backend).
 > [All projects](https://fsharp-wasm.github.io/projects/) · [Roadmap](https://fsharp-wasm.github.io/docs/roadmap/) · [Tests](https://fsharp-wasm.github.io/tests/) · [Benchmarks](https://fsharp-wasm.github.io/benchmarks/) · [Live demos](https://fsharp-wasm.github.io/demos/)
