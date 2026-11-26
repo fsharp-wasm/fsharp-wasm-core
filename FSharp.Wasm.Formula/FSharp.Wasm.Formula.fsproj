@@ -1,8 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <!-- FSharp.Wasm.Formula: the formulas of a spreadsheet — a parser with positions (A1 and $A$1 references, ranges, names, numbers, text, the operators of a spreadsheet with
-       their precedence, function calls), an evaluator with spreadsheet errors (#DIV/0!, #NAME?, #VALUE!, #REF!, #NUM!, #CYCLE!), and a book of cells that keeps what depends on what
-       and recalculates only the cells a change reaches, in dependency order, naming the cells that changed.  Nothing to depend on but the base library and the number parsing of
-       FSharp.Wasm.Data; runs under .NET and as WasmGC and is tested both ways (tests/FSharp.Wasm.Libs.Tests). -->
+       their precedence, function calls), an evaluator with spreadsheet errors (#DIV/0!, #NAME?, #VALUE!, #REF!, #NUM!, #CYCLE!), and a sheet of cells that are calcs of the engine of
+       FSharp.Wasm.Graph (what depends on what is found by running them, only the cells a change reaches run again, in dependency order, naming the cells that changed), and a book with the
+       text of its cells of its own.  Nothing to depend on but the base library, the number parsing of FSharp.Wasm.Data and the engine of FSharp.Wasm.Graph; runs under .NET and as WasmGC and is tested both ways (tests/FSharp.Wasm.Libs.Tests). -->
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <LangVersion>preview</LangVersion>
@@ -17,6 +17,7 @@
   <ItemGroup>
     <ProjectReference Include="../FSharp.Wasm.Core/FSharp.Wasm.Core.fsproj" />
     <ProjectReference Include="../FSharp.Wasm.Data/FSharp.Wasm.Data.fsproj" />
+    <ProjectReference Include="../FSharp.Wasm.Graph/FSharp.Wasm.Graph.fsproj" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Syntax.fs" />

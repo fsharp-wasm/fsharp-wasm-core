@@ -24,18 +24,23 @@ Functions: `SUM AVERAGE MIN MAX COUNT PRODUCT ABS INT SQRT ROUND MOD POWER IF IF
 Errors are values, the first one found is the answer, and they travel through the cells that read them: `#DIV/0!`, `#NAME?`, `#VALUE!`, `#REF!`, `#NUM!`, `#CYCLE!`, and `#ERROR!` for text after `=` that does
 not parse (the text is kept, to be corrected).
 
-## The book
+## The book and the sheet
 
-`Set(col, row, text)` takes what was typed: a formula (starts with `=`), a number, text, or nothing (clears the cell). It parses, finds what the cell reads (single cells, and ranges as boxes), and calculates
-the cell and then everything that depends on it, directly or through others, **in an order in which a cell comes after the cells it reads and once each**. The result is the cells whose value changed, in that
-order, with what they were: what a view repaints, and what another place needs to be told (the patch of the edit). A value that comes out the same is not a change.
+The cells are calcs of the engine of `FSharp.Wasm.Graph` ([graph.md](graph.md)). A `Sheet` makes the value of a cell a function of its text and of the cells (and names) its formula reads; where the text lives is
+not the sheet's business (`text` is read inside the calc, so what it reads is what the cell depends on: a source of the book's own, or a field of a `Doc`, which is what puts the cells of a plan into the
+history, the patches and the undo of a document). A `Book` is a sheet with the text of its cells of its own:
 
-Cells that read each other are `#CYCLE!`, every one of the cycle and not an endless loop, and the cycle is gone when it is broken. The walk keeps a stack of its own, so a column of running totals as long as
-the sheet is a chain and not a call stack. The sheet is 16 384 columns by 16 384 rows (a cell is one number, `Row * 16384 + Col`).
+`Set(col, row, text)` takes what was typed: a formula (starts with `=`), a number, text, or nothing (clears the cell). The cell and everything that depends on it, directly or through others, are calculated
+**in an order in which a cell comes after the cells it reads and once each**, and a cell none of whose inputs came out different is not calculated at all. The result is the cells whose value changed, in
+that order, with what they were: what a view repaints, and what another place needs to be told (the patch of the edit). A value that comes out the same is not a change.
+
+What a formula depends on is what it read when it ran: `IF(B1=0,0,A1/B1)` does not depend on `A1` while `B1` is 0, and `=IF(TRUE,1,A1)` in `A1` is not a cycle. Cells that read each other are `#CYCLE!`,
+every one of the cycle and not an endless loop, and the cycle is gone when it is broken. The walk keeps a stack of its own, so a column of running totals as long as the sheet is a chain and not a call
+stack. The sheet is 16 384 columns by 16 384 rows (a cell is one number, `Row * 16384 + Col`).
 
 What lies outside the book (the names and functions of the host) is told with `Invalidate(cells)` or `Recalculate()`.
 
 ## Not yet
 
-- A range that is read by many formulas is checked against the cells that changed one by one (formulas with ranges are few); a reverse index of ranges would make a large sheet of them faster.
+- A range depends on each of its cells (`SUM(A1:A100000)` is a hundred thousand dependencies, and the cells of it that nobody wrote into are blanks that were made to be read); a dependency on a region in the engine would make it one.
 - No references to another sheet, no array formulas, no dates, and the number formatting is the host's.
