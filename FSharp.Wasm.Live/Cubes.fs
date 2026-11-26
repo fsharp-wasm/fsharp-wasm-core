@@ -9,15 +9,21 @@ module Cubes =
 
     let private samePair (a: int * int) (b: int * int) : bool = fst a = fst b && snd a = snd b
 
-    /// The cube of the facts with dimension `rows` on the rows and `cols` on the columns.  Turning the table is a new pair, and building it again is one pass over the facts; nothing else
-    /// reaches it.
-    let pivot (engine: Engine) (facts: Facts) (axes: Source<int * int>) (formulas: (string * Expr)[]) : Calc<Cube> =
+    /// The cube of the facts with dimension `rows` on the rows and `cols` on the columns, for facts that are written into in place (a line of the ledger is corrected: the owner of the
+    /// facts writes the number into the array and raises `revision`, and that is what tells this calc that what it read has changed).  Turning the table is a new pair, and building it again
+    /// is one pass over the facts; nothing else reaches it.
+    let pivotOver (engine: Engine) (facts: Facts) (axes: Source<int * int>) (revision: Source<int>) (formulas: (string * Expr)[]) : Calc<Cube> =
         // the first value of a calc is the one it has before it runs: the cube of the first pair
         let (r0, c0) = axes.Peek
         let first = Facts.pivot facts r0 c0 formulas
         Calc<Cube>(engine, Same.reference, first, (fun _ _ -> ()), fun () ->
+            revision.Value |> ignore
             let (r, c) = axes.Value
             Facts.pivot facts r c formulas)
+
+    /// The cube of facts that do not change under it: `pivotOver` with a revision that nobody raises.
+    let pivot (engine: Engine) (facts: Facts) (axes: Source<int * int>) (formulas: (string * Expr)[]) : Calc<Cube> =
+        pivotOver engine facts axes (Source<int>(engine, 0, Same.int)) formulas
 
     /// What a plan puts into a measure of the cube: for each leaf cell it gives a number for, `(row leaf, column leaf, value)`.  `cells` is read inside the calc, so what it reads is what the
     /// cube depends on.  Only the cells that came out different since the last run are written (`Cube.withLeaves`: the difference is added to the prefix sums below and to the right of the

@@ -101,6 +101,21 @@ let cubes =
             e.Flush() |> ignore
             Expect.equal cube.Value.RowTree.Leaves 3 "months on the rows now"
             Expect.equal (cube.Value.RowTree.Nodes.[1].Label) "Q1" "and they are the periods"
+        testCase "facts written into in place: the cube is built again when the revision is raised, and not before" <| fun () ->
+            let e = Engine()
+            let f = ledger ()
+            let axes = Source<int * int>(e, (0, 1), (fun a b -> fst a = fst b && snd a = snd b))
+            let revision = Source<int>(e, 0, Same.int)
+            let cube = Cubes.pivotOver e f axes revision [||]
+            Expect.equal (Cube.value cube.Value 0 0 0) 9.0 "nine ones"
+            // line 0 is account 0 in month 0: it is 5 now
+            f.Values.[0].[0] <- 5.0
+            e.Flush() |> ignore
+            Expect.equal (Cube.value cube.Value 0 0 0) 9.0 "nobody said so: the cube is the one it was"
+            revision.Set 1 |> ignore
+            e.Flush() |> ignore
+            Expect.equal (Cube.value cube.Value 0 0 0) 13.0 "the revision: nine ones, one of them five"
+            Expect.equal (Cube.leaf cube.Value 0 0 0) 5.0 "in the cell of the line"
         testCase "a plan over the budget: only the cells that changed are written, and the totals above them move by the difference" <| fun () ->
             let e = Engine()
             let f = ledger ()
