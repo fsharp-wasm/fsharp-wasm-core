@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- FSharp.Wasm.Formula: the formulas of a spreadsheet — a parser with positions (A1 and $A$1 references, ranges, names, numbers, text, the operators of a spreadsheet with
+       their precedence, function calls), an evaluator with spreadsheet errors (#DIV/0!, #NAME?, #VALUE!, #REF!, #NUM!, #CYCLE!), and a book of cells that keeps what depends on what
+       and recalculates only the cells a change reaches, in dependency order, naming the cells that changed.  Nothing to depend on but the base library and the number parsing of
+       FSharp.Wasm.Data; runs under .NET and as WasmGC and is tested both ways (tests/FSharp.Wasm.Libs.Tests). -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>preview</LangVersion>
+    <RootNamespace>FSharp.Wasm.Formula</RootNamespace>
+    <PackageId>FSharp.Wasm.Formula</PackageId>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/fsharp-wasm/fsharp-wasm-core</RepositoryUrl>
+    <NuGetAudit>false</NuGetAudit>
+    <NoWarn>$(NoWarn);NU1900;NETSDK1188</NoWarn>
+  </PropertyGroup>
+  <!-- the base library (Dictionary, HashSet): a program that compiles this has it first in its compile list -->
+  <ItemGroup>
+    <ProjectReference Include="../FSharp.Wasm.Core/FSharp.Wasm.Core.fsproj" />
+    <ProjectReference Include="../FSharp.Wasm.Data/FSharp.Wasm.Data.fsproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Syntax.fs" />
+    <Compile Include="Eval.fs" />
+    <Compile Include="Book.fs" />
+  </ItemGroup>
+</Project>
