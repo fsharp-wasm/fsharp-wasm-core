@@ -6,6 +6,7 @@
   <Project Path="FSharp.Wasm.Frame/FSharp.Wasm.Frame.fsproj" />
   <Project Path="FSharp.Wasm.Formula/FSharp.Wasm.Formula.fsproj" />
   <Project Path="FSharp.Wasm.Graph/FSharp.Wasm.Graph.fsproj" />
+  <Project Path="FSharp.Wasm.Live/FSharp.Wasm.Live.fsproj" />
   <Project Path="FSharp.Wasm.Design/FSharp.Wasm.Design.fsproj" />
   <Project Path="FSharp.Wasm.Actors/FSharp.Wasm.Actors.fsproj" />
   <Project Path="FSharp.Wasm.Icons/FSharp.Wasm.Icons.fsproj" />

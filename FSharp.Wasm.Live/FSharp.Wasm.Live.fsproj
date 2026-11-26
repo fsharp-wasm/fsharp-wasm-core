@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- FSharp.Wasm.Live: the operations of a table as calcs of the graph engine: filter, group by, pivot, a plan written over a cube, fold.  Each keeps what it made, so that a table that only grew
+       (an append to a column of the graph) costs the new rows and not the table, and a change that does not reach it costs nothing.  It is what the accounting grid and the data science libraries
+       share.  Depends on the engine (FSharp.Wasm.Graph) and the tables (FSharp.Wasm.Frame) and on nothing else; runs under .NET and as WasmGC and is tested both ways (tests/FSharp.Wasm.Libs.Tests). -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>preview</LangVersion>
+    <RootNamespace>FSharp.Wasm.Live</RootNamespace>
+    <PackageId>FSharp.Wasm.Live</PackageId>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/fsharp-wasm/fsharp-wasm-core</RepositoryUrl>
+    <NuGetAudit>false</NuGetAudit>
+    <NoWarn>$(NoWarn);NU1900;NETSDK1188</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../FSharp.Wasm.Core/FSharp.Wasm.Core.fsproj" />
+    <ProjectReference Include="../FSharp.Wasm.Graph/FSharp.Wasm.Graph.fsproj" />
+    <ProjectReference Include="../FSharp.Wasm.Frame/FSharp.Wasm.Frame.fsproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Rows.fs" />
+    <Compile Include="Cubes.fs" />
+  </ItemGroup>
+</Project>

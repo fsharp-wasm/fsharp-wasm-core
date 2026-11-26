@@ -16,6 +16,7 @@
     <Compile Include="FrameTests.fs" />
     <Compile Include="FormulaTests.fs" />
     <Compile Include="GraphTests.fs" />
+    <Compile Include="LiveTests.fs" />
     <Compile Include="DesignTests.fs" />
     <Compile Include="ActorsTests.fs" />
     <Compile Include="Program.fs" />
@@ -26,6 +27,7 @@
     <ProjectReference Include="../../FSharp.Wasm.Edit/FSharp.Wasm.Edit.fsproj" />
     <ProjectReference Include="../../FSharp.Wasm.Frame/FSharp.Wasm.Frame.fsproj" />
     <ProjectReference Include="../../FSharp.Wasm.Graph/FSharp.Wasm.Graph.fsproj" />
+    <ProjectReference Include="../../FSharp.Wasm.Live/FSharp.Wasm.Live.fsproj" />
     <ProjectReference Include="../../FSharp.Wasm.Formula/FSharp.Wasm.Formula.fsproj" />
     <ProjectReference Include="../../FSharp.Wasm.Design/FSharp.Wasm.Design.fsproj" />
     <ProjectReference Include="../../FSharp.Wasm.Actors/FSharp.Wasm.Actors.fsproj" />

@@ -1,7 +1,8 @@
 # The data graph: an incremental Elmish layer for data, with a patch protocol
 
-Status: **proposal**, 2026-11-26, for the maintainer's decision. Nothing of it is built, except the part that proves the core: `FSharp.Wasm.Formula.Book` recalculates only what a change reaches, in dependency
-order, and names the cells that changed (docs/formula.md). This document says what the rest is, in what order it is built, and what he has to decide.
+Status: **under construction**, 2026-11-26. The maintainer gave the go the same day ("implement the data graph, use it for the editing of the accounting grid, keep fsharp-wasm-sci in mind, fold, group by, filter and
+pivot are needed, extend the architecture, modular if need be") and the recommended answers of the five decisions below were taken. What is built, and how it is cut into modules, is in [graph.md](graph.md); this
+document keeps the design and the reasons.
 
 ## What he asked for
 
@@ -109,9 +110,9 @@ beside it that quotes `={cell}`. Nothing in it is faked: the tape is the real pa
 
 | step | what | state |
 |---|---|---|
-| 0 | `Formula`: parser, evaluator, `Book` (dependency order, early cut-off, changes as output, cycles) | **done** (this repository) |
-| 1 | `Graph`: the store, typed fields, `Patch` (ops, versions, inverse, apply, diff, JSON form), derived nodes with tracking and cut-off; `Edit` as a client; `Book` rebuilt on it | |
-| 2 | Text and lists as sequences (RGA), `Column` with `Append`; the pyramid and the cube as derived nodes | |
+| 0 | `Formula`: parser, evaluator, `Book` (dependency order, early cut-off, changes as output, cycles) | **done** |
+| 1 | `Graph`: the engine (tracking, cut-off, cycles), the document (typed fields, patches with versions and inverses), `Timeline`; `Book` rebuilt on it | **done** 2026-11-26 (`Edit` as a client and the JSON form of a patch are not) |
+| 2 | Lists as sequences (RGA), `Column` with `Append`; filter, group by, pivot and the plan over a cube as calcs (`FSharp.Wasm.Live`) | **done** 2026-11-26 (the chart pyramid as a calc is not) |
 | 3 | Json and Markdown node types, the Markdown parser and printer, the renderings | |
 | 4 | Scene as nodes with bindings; the style graph; the canvas host takes scene patches | breaking change of `Reactive` |
 | 5 | Transport: patches over the edge host (GGBP), two workers, merge; the accounting demo with tape and slider | |

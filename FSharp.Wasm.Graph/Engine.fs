@@ -225,7 +225,12 @@ module Same =
 type Source<'a>(engine: Engine, initial: 'a, same: 'a -> 'a -> bool) =
     let cell = engine.NewCell false
     let mutable value = initial
+    let mutable version = 0
     member _.Cell : Cell = cell
+    /// How many times it was given another value: what a calc that keeps part of its work (a scan of rows) compares to know that the parameter changed.
+    member _.Version : int =
+        engine.Read cell
+        version
     /// The value; inside a calc it is a dependency.
     member _.Value : 'a =
         engine.Read cell
@@ -237,6 +242,7 @@ type Source<'a>(engine: Engine, initial: 'a, same: 'a -> 'a -> bool) =
         if same value v then false
         else
             value <- v
+            version <- version + 1
             engine.Changed cell
             true
 
