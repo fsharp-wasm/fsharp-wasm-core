@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- FSharp.Wasm.Graph: an incremental data graph.  The engine keeps what depends on what (sources, and calcs that read them and run again, once each and in order, only when something they read
+       changed, and stop at a value that comes out the same); the document is a graph of nodes with fields, lists and columns, changed by patches that are data (versioned, invertible, the same
+       in any order), with a history.  Nothing to depend on but the base library; runs under .NET and as WasmGC and is tested both ways (tests/FSharp.Wasm.Libs.Tests). -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>preview</LangVersion>
+    <RootNamespace>FSharp.Wasm.Graph</RootNamespace>
+    <PackageId>FSharp.Wasm.Graph</PackageId>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/fsharp-wasm/fsharp-wasm-core</RepositoryUrl>
+    <NuGetAudit>false</NuGetAudit>
+    <NoWarn>$(NoWarn);NU1900;NETSDK1188</NoWarn>
+  </PropertyGroup>
+  <!-- the base library (Dictionary, HashSet): a program that compiles this has it first in its compile list -->
+  <ItemGroup>
+    <ProjectReference Include="../FSharp.Wasm.Core/FSharp.Wasm.Core.fsproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Engine.fs" />
+    <Compile Include="Doc.fs" />
+    <Compile Include="Timeline.fs" />
+  </ItemGroup>
+</Project>

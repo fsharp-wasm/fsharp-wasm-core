@@ -15,6 +15,7 @@
     <Compile Include="../FSharp.Wasm.Libs.Tests/IconsTests.fs" />
     <Compile Include="../FSharp.Wasm.Libs.Tests/FrameTests.fs" />
     <Compile Include="../FSharp.Wasm.Libs.Tests/FormulaTests.fs" />
+    <Compile Include="../FSharp.Wasm.Libs.Tests/GraphTests.fs" />
     <Compile Include="../FSharp.Wasm.Libs.Tests/DesignTests.fs" />
     <Compile Include="../FSharp.Wasm.Libs.Tests/ActorsTests.fs" />
     <Compile Include="WasmTests.fs" />
@@ -24,6 +25,7 @@
     <ProjectReference Include="../../FSharp.Wasm.Ui/FSharp.Wasm.Ui.fsproj" />
     <ProjectReference Include="../../FSharp.Wasm.Edit/FSharp.Wasm.Edit.fsproj" />
     <ProjectReference Include="../../FSharp.Wasm.Frame/FSharp.Wasm.Frame.fsproj" />
+    <ProjectReference Include="../../FSharp.Wasm.Graph/FSharp.Wasm.Graph.fsproj" />
     <ProjectReference Include="../../FSharp.Wasm.Formula/FSharp.Wasm.Formula.fsproj" />
     <ProjectReference Include="../../FSharp.Wasm.Design/FSharp.Wasm.Design.fsproj" />
     <ProjectReference Include="../../FSharp.Wasm.Actors/FSharp.Wasm.Actors.fsproj" />
