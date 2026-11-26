@@ -151,6 +151,35 @@ let cube =
             Expect.isTrue (found.Length > 0) "there are some"
             Expect.approxEqual (found |> Array.sumBy (fun i -> f.Values.[0].[i])) (Cube.value c 0 revenue q3) 1e-6 "they add up"
             Expect.equal (Facts.entries f 0 0 1 0).Length f.Count "the root is every fact"
+        testCase "replacing leaf cells: the totals of the groups that hold them move by the difference, the others do not" <| fun () ->
+            let f = facts 3000
+            let c = Facts.pivot f 0 1 [||]
+            let rows = f.Dimensions.[0].Tree
+            let cols = f.Dimensions.[1].Tree
+            let before = Cube.leaf c 0 2 5
+            Expect.approxEqual before (Cube.value c 0 rows.LeafNodes.[2] cols.LeafNodes.[5]) 1e-9 "the leaf read back is the value of the leaf node"
+            let changed = Cube.withLeaves c 0 [| (2, 5, 1000.0); (0, 0, -50.0) |]
+            Expect.approxEqual (Cube.leaf changed 0 2 5) 1000.0 1e-6 "the new value"
+            Expect.approxEqual (Cube.leaf changed 0 0 0) -50.0 1e-6 "the other one"
+            // a group that holds the first leaf only, and a group that holds none of the two
+            let d1 = 1000.0 - before
+            for r in 1 .. rows.Nodes.Length - 1 do
+                for k in 1 .. cols.Nodes.Length - 1 do
+                    let rn = rows.Nodes.[r]
+                    let kn = cols.Nodes.[k]
+                    let holds (a: int) (b: int) = rn.Lo <= a && a < rn.Hi && kn.Lo <= b && b < kn.Hi
+                    let expected = Cube.value c 0 r k + (if holds 2 5 then d1 else 0.0) + (if holds 0 0 then -50.0 - Cube.leaf c 0 0 0 else 0.0)
+                    Expect.approxEqual (Cube.value changed 0 r k) expected 1e-6 (sprintf "group %d x %d" r k)
+            Expect.approxEqual (Cube.value changed 0 0 0) (Cube.value c 0 0 0 + d1 + (-50.0 - Cube.leaf c 0 0 0)) 1e-6 "the total of everything"
+            Expect.equal (Cube.value changed 1 1 1) (Cube.value c 1 1 1) "another measure is the same"
+            Expect.approxEqual (Cube.value c 0 rows.LeafNodes.[2] cols.LeafNodes.[5]) before 1e-12 "and the cube that was is not changed"
+        testCase "a leaf that is replaced twice is the last value, and the same value again changes nothing" <| fun () ->
+            let f = facts 1500
+            let c = Facts.pivot f 0 1 [||]
+            let twice = Cube.withLeaves c 0 [| (1, 1, 5.0); (1, 1, 7.0) |]
+            Expect.approxEqual (Cube.leaf twice 0 1 1) 7.0 1e-9 "the last one"
+            let same = Cube.withLeaves c 0 [| (3, 4, Cube.leaf c 0 3 4) |]
+            Expect.approxEqual (Cube.value same 0 0 0) (Cube.value c 0 0 0) 1e-9 "nothing moved"
         testCase "an empty cube has zeros" <| fun () ->
             let rows = Hierarchy.ofPaths accounts
             let cols = Hierarchy.ofPaths months

@@ -116,6 +116,28 @@ module Cube =
         if m < c.Measures.Length then total c m rowNode colNode
         else evaluate c (snd c.Formulas.[m - c.Measures.Length]) rowNode colNode
 
+    /// One leaf cell of a measure of the facts (row leaf, column leaf), read back from the prefix sums.
+    let leaf (c: Cube) (m: int) (row: int) (col: int) : float =
+        let w = c.ColTree.Leaves + 1
+        let s = c.Sums.[m]
+        s.[(row + 1) * w + col + 1] - s.[row * w + col + 1] - s.[(row + 1) * w + col] + s.[row * w + col]
+
+    /// The cube with leaf cells of a measure of the facts replaced by values of their own (a plan that overrides the budget of a month of an account): `(row leaf, column leaf, value)`.  A change
+    /// of one leaf adds its difference to the prefix sums below and to the right of it, so the totals of every group that holds it move by exactly that, and the others are not touched.  The
+    /// measure's sums are copied, the other measures' are shared.  A cell that is in `changes` twice is the last one.
+    let withLeaves (c: Cube) (m: int) (changes: (int * int * float)[]) : Cube =
+        let nr = c.RowTree.Leaves
+        let nc = c.ColTree.Leaves
+        let w = nc + 1
+        let s = Array.copy c.Sums.[m]
+        for (row, col, v) in changes do
+            let w0 = w
+            let delta = v - (s.[(row + 1) * w0 + col + 1] - s.[row * w0 + col + 1] - s.[(row + 1) * w0 + col] + s.[row * w0 + col])
+            for r in row + 1 .. nr do
+                for k in col + 1 .. nc do
+                    s.[r * w + k] <- s.[r * w + k] + delta
+        { c with Sums = c.Sums |> Array.mapi (fun i x -> if i = m then s else x) }
+
 /// A way to look at the facts: the leaf of each fact on one axis.
 type Dimension = { Name: string; Tree: Hierarchy; Leaf: int[] }
 
