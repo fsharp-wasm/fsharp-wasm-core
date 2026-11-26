@@ -17,8 +17,9 @@ type Entry =
 /// travels like any other), and the steps that arrive from elsewhere are on the tape and leave the undo alone.
 type Timeline(doc: Doc) =
     let tape = ResizeArray<Entry>()
-    let undo = Stack<Patch>()
-    let redo = Stack<Patch>()
+    /// the patch that takes a step of this actor back, and the label of the step: what the tape says of an undo and of a redo
+    let undo = Stack<Patch * string>()
+    let redo = Stack<Patch * string>()
 
     let record (label: string) (remote: bool) (a: Applied) : unit =
         tape.Add { Number = tape.Count + 1; Label = label; Actor = a.Patch.Actor; Remote = remote; Patch = a.Patch; Inverse = a.Inverse; Flushed = a.Flushed }
@@ -32,7 +33,7 @@ type Timeline(doc: Doc) =
     member _.Do(label: string, build: Tx -> unit) : Applied =
         let a = doc.Edit(label, build)
         record label false a
-        undo.Push a.Inverse
+        undo.Push((a.Inverse, label))
         redo.Clear()
         a
 
@@ -46,18 +47,18 @@ type Timeline(doc: Doc) =
     member _.Undo() : Applied option =
         if undo.Count = 0 then None
         else
-            let inverse = undo.Pop()
+            let (inverse, label) = undo.Pop()
             let a = doc.Apply inverse
-            record inverse.Label false a
-            redo.Push a.Inverse
+            record ("undo " + label) false a
+            redo.Push((a.Inverse, label))
             Some a
 
     /// Do again what was taken back.
     member _.Redo() : Applied option =
         if redo.Count = 0 then None
         else
-            let again = redo.Pop()
+            let (again, label) = redo.Pop()
             let a = doc.Apply again
-            record again.Label false a
-            undo.Push a.Inverse
+            record ("redo " + label) false a
+            undo.Push((a.Inverse, label))
             Some a

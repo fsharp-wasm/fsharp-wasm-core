@@ -314,6 +314,16 @@ let timeline =
             t.Undo() |> ignore
             Expect.equal (d.Exists id) false "the first step took the node away"
             Expect.isFalse t.CanUndo "nothing more"
+        testCase "the tape names an undo and a redo by the step they take back or do again" <| fun () ->
+            let d = Doc(1)
+            let t = Timeline(d)
+            let mutable id = 0
+            t.Do("make", fun tx -> id <- tx.Create "Thing") |> ignore
+            t.Do("set x", fun tx -> tx.Set(id, "x", Num 1.0)) |> ignore
+            t.Undo() |> ignore
+            t.Redo() |> ignore
+            t.Undo() |> ignore
+            Expect.equal (t.Tape |> Array.map (fun e -> e.Label) |> String.concat ",") "make,set x,undo set x,redo set x,undo set x" "not undo undo, and not an undo for a redo"
         testCase "the tape has every step with its patch and its flush, and a step from elsewhere is on it and stays out of the undo" <| fun () ->
             let a = Doc(1)
             let ta = Timeline(a)
