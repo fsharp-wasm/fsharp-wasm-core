@@ -2,5 +2,7 @@
   <!-- After the project: IsPackable is set by the project itself, so what depends on it is decided here (Directory.Build.props runs before the project body). -->
   <PropertyGroup Condition="'$(IsPackable)' == 'true'">
     <PackageTags>fsharp;webassembly;wasm;wasmgc;fsharp-wasm;$(PackageTags)</PackageTags>
+    <!-- A reproducible package (source paths mapped to /_/) only where a package is made: a tool that finds its files by __SOURCE_DIRECTORY__ (tools/design) has to see the real one. -->
+    <ContinuousIntegrationBuild Condition="'$(CI)' == 'true'">true</ContinuousIntegrationBuild>
   </PropertyGroup>
 </Project>

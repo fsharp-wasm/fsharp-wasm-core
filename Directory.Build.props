@@ -13,7 +13,6 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <!-- The XML documentation travels with the dll, so that an IDE shows it.  Set here, before the SDK reads it: the F# targets derive the file's name only from a value that is there at the start. -->
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <ContinuousIntegrationBuild Condition="'$(CI)' == 'true'">true</ContinuousIntegrationBuild>
   </PropertyGroup>
 
   <!-- A package carries its sources too: a program compiled by fsharp-wasm compiles the libraries it uses together with its own code (the dll is for .NET).
