@@ -5,10 +5,11 @@
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <LangVersion>preview</LangVersion>
+    <IsPackable>true</IsPackable>
+    <Description>What a dashboard or SCADA screen needs that is not drawing: samples with quality, the ISA-18.2 alarm state machine and the compression of a history by deadband. Runs under .NET and as WebAssembly GC.</Description>
+    <PackageTags>scada;alarms;telemetry</PackageTags>
     <RootNamespace>FSharp.Wasm.Telemetry</RootNamespace>
     <PackageId>FSharp.Wasm.Telemetry</PackageId>
-    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
-    <RepositoryUrl>https://github.com/fsharp-wasm/fsharp-wasm-core</RepositoryUrl>
     <NuGetAudit>false</NuGetAudit>
     <NoWarn>$(NoWarn);NU1900;NETSDK1188</NoWarn>
   </PropertyGroup>

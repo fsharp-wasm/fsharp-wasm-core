@@ -6,10 +6,11 @@
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <LangVersion>preview</LangVersion>
+    <IsPackable>true</IsPackable>
+    <Description>The formulas of a spreadsheet: a parser with positions, an evaluator with spreadsheet errors, and a sheet whose cells are calcs of the FSharp.Wasm.Graph engine. Runs under .NET and as WebAssembly GC.</Description>
+    <PackageTags>spreadsheet;formula</PackageTags>
     <RootNamespace>FSharp.Wasm.Formula</RootNamespace>
     <PackageId>FSharp.Wasm.Formula</PackageId>
-    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
-    <RepositoryUrl>https://github.com/fsharp-wasm/fsharp-wasm-core</RepositoryUrl>
     <NuGetAudit>false</NuGetAudit>
     <NoWarn>$(NoWarn);NU1900;NETSDK1188</NoWarn>
   </PropertyGroup>

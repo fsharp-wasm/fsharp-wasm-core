@@ -5,10 +5,11 @@
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <LangVersion>preview</LangVersion>
+    <IsPackable>true</IsPackable>
+    <Description>The operations of a table as incremental calcs of the graph engine: filter, group by, pivot, plans over a cube, fold. Runs under .NET and as WebAssembly GC.</Description>
+    <PackageTags>pivot;incremental;tables</PackageTags>
     <RootNamespace>FSharp.Wasm.Live</RootNamespace>
     <PackageId>FSharp.Wasm.Live</PackageId>
-    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
-    <RepositoryUrl>https://github.com/fsharp-wasm/fsharp-wasm-core</RepositoryUrl>
     <NuGetAudit>false</NuGetAudit>
     <NoWarn>$(NoWarn);NU1900;NETSDK1188</NoWarn>
   </PropertyGroup>

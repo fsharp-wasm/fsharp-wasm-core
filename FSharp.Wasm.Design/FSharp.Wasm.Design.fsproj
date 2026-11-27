@@ -6,10 +6,11 @@
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <LangVersion>preview</LangVersion>
+    <IsPackable>true</IsPackable>
+    <Description>The look of the platform as data: colour ramps, light and dark roles, scales of space, type, radius and motion, the contrast the roles keep, and the exports to CSS custom properties and JSON.</Description>
+    <PackageTags>design-tokens;css;theming</PackageTags>
     <RootNamespace>FSharp.Wasm.Design</RootNamespace>
     <PackageId>FSharp.Wasm.Design</PackageId>
-    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
-    <RepositoryUrl>https://github.com/fsharp-wasm/fsharp-wasm-core</RepositoryUrl>
     <NuGetAudit>false</NuGetAudit>
     <NoWarn>$(NoWarn);NU1900;NETSDK1188</NoWarn>
   </PropertyGroup>

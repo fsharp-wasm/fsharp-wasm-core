@@ -1,0 +1,26 @@
+<Project>
+  <!-- Packages: the library projects (FSharp.Wasm.*) opt in with <IsPackable>true</IsPackable>; tests and tools do not.  `bash build/pack.sh [version]` packs them.
+       What is common to all of them is here, so that a project says only what is its own: its description and its tags. -->
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
+    <Version Condition="'$(Version)' == ''">0.1.0-preview</Version>
+    <Authors>The fsharp-wasm contributors</Authors>
+    <Copyright>Copyright 2026 The fsharp-wasm contributors</Copyright>
+    <PackageLicenseExpression Condition="'$(PackageLicenseExpression)' == ''">Apache-2.0</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/fsharp-wasm/fsharp-wasm-core</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageProjectUrl>https://github.com/fsharp-wasm/fsharp-wasm-core</PackageProjectUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <!-- The XML documentation travels with the dll, so that an IDE shows it.  Set here, before the SDK reads it: the F# targets derive the file's name only from a value that is there at the start. -->
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <ContinuousIntegrationBuild Condition="'$(CI)' == 'true'">true</ContinuousIntegrationBuild>
+  </PropertyGroup>
+
+  <!-- A package carries its sources too: a program compiled by fsharp-wasm compiles the libraries it uses together with its own code (the dll is for .NET).
+       The `fable/` folder is where the front end's project cracker looks for them; FSharp.Wasm.Core.props is the compile list of the base library. -->
+  <ItemGroup Condition="'$(IsPackable)' == 'true'">
+    <Content Include="*.fsproj;*.props;**/*.fs" Exclude="obj/**;bin/**" Pack="true" PackagePath="fable/" />
+    <None Include="$(MSBuildThisFileDirectory)README.md" Pack="true" PackagePath="/" />
+    <None Include="$(MSBuildThisFileDirectory)LICENSE;$(MSBuildThisFileDirectory)NOTICE" Pack="true" PackagePath="/" />
+  </ItemGroup>
+</Project>

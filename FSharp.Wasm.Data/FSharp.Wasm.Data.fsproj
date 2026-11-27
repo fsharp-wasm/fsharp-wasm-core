@@ -4,10 +4,11 @@
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <LangVersion>preview</LangVersion>
+    <IsPackable>true</IsPackable>
+    <Description>JSON, number parsing: a value type, a writer, a parser that reports the position of the first problem. No dependencies; runs under .NET and as WebAssembly GC.</Description>
+    <PackageTags>json;parser</PackageTags>
     <RootNamespace>FSharp.Wasm.Data</RootNamespace>
     <PackageId>FSharp.Wasm.Data</PackageId>
-    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
-    <RepositoryUrl>https://github.com/fsharp-wasm/fsharp-wasm-core</RepositoryUrl>
     <NuGetAudit>false</NuGetAudit>
     <NoWarn>$(NoWarn);NU1900;NETSDK1188</NoWarn>
   </PropertyGroup>

@@ -5,10 +5,11 @@
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <LangVersion>preview</LangVersion>
+    <IsPackable>true</IsPackable>
+    <Description>Tables of facts summed along hierarchies: cubes of prefix sums, pivoting, drill-down, formulas over measures and the formatting of amounts. Runs under .NET and as WebAssembly GC.</Description>
+    <PackageTags>pivot;ledger;tables</PackageTags>
     <RootNamespace>FSharp.Wasm.Frame</RootNamespace>
     <PackageId>FSharp.Wasm.Frame</PackageId>
-    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
-    <RepositoryUrl>https://github.com/fsharp-wasm/fsharp-wasm-core</RepositoryUrl>
     <NuGetAudit>false</NuGetAudit>
     <NoWarn>$(NoWarn);NU1900;NETSDK1188</NoWarn>
   </PropertyGroup>

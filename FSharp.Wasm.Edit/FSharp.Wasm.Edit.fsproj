@@ -5,10 +5,11 @@
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <LangVersion>preview</LangVersion>
+    <IsPackable>true</IsPackable>
+    <Description>The edits of a document as data: operations that can be undone, where a drop lands, a history, an edit in place. No geometry, no rendering; runs under .NET and as WebAssembly GC.</Description>
+    <PackageTags>editor;undo;history</PackageTags>
     <RootNamespace>FSharp.Wasm.Edit</RootNamespace>
     <PackageId>FSharp.Wasm.Edit</PackageId>
-    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
-    <RepositoryUrl>https://github.com/fsharp-wasm/fsharp-wasm-core</RepositoryUrl>
     <NuGetAudit>false</NuGetAudit>
     <NoWarn>$(NoWarn);NU1900;NETSDK1188</NoWarn>
   </PropertyGroup>

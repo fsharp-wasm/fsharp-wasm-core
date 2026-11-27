@@ -5,10 +5,11 @@
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <LangVersion>preview</LangVersion>
+    <IsPackable>true</IsPackable>
+    <Description>An incremental data graph: an engine that runs calcs again only when something they read changed, and a document of versioned, invertible patches with a history. Runs under .NET and as WebAssembly GC.</Description>
+    <PackageTags>incremental;reactive;crdt</PackageTags>
     <RootNamespace>FSharp.Wasm.Graph</RootNamespace>
     <PackageId>FSharp.Wasm.Graph</PackageId>
-    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
-    <RepositoryUrl>https://github.com/fsharp-wasm/fsharp-wasm-core</RepositoryUrl>
     <NuGetAudit>false</NuGetAudit>
     <NoWarn>$(NoWarn);NU1900;NETSDK1188</NoWarn>
   </PropertyGroup>

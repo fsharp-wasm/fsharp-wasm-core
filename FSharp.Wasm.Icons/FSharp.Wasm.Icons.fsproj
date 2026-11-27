@@ -5,10 +5,12 @@
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <LangVersion>preview</LangVersion>
+    <IsPackable>true</IsPackable>
+    <Description>Icons as typed shapes on a 24 x 24 grid (the Lucide set), drawn the same everywhere: SVG markup, DOM elements, canvas paths. Runs under .NET and as WebAssembly GC.</Description>
+    <PackageTags>icons;svg;lucide</PackageTags>
     <RootNamespace>FSharp.Wasm.Icons</RootNamespace>
     <PackageId>FSharp.Wasm.Icons</PackageId>
     <PackageLicenseExpression>Apache-2.0 AND ISC AND MIT</PackageLicenseExpression>
-    <RepositoryUrl>https://github.com/fsharp-wasm/fsharp-wasm-core</RepositoryUrl>
     <NuGetAudit>false</NuGetAudit>
     <NoWarn>$(NoWarn);NU1900;NETSDK1188</NoWarn>
   </PropertyGroup>
