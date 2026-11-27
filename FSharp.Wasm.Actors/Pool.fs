@@ -87,7 +87,7 @@ module Pool =
                 match p.Workers |> List.filter (fun w -> w.Status = Ready && w.InFlight.Length < p.Prefetch) with
                 | [] -> p, List.rev acc
                 | open' ->
-                    let w = open' |> List.sortBy (fun w -> w.InFlight.Length, w.Id) |> List.head
+                    let w = open' |> List.minBy (fun w -> w.InFlight.Length, w.Id)
                     go (setWorker { w with InFlight = w.InFlight @ [ (jid, job) ] } { p with Queue = rest }) (Dispatch(w.Id, jid, job) :: acc)
         if p.Failed then p, [] else go p []
 

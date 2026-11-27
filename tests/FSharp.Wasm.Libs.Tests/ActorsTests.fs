@@ -85,8 +85,8 @@ let rec private run (budget: int) (s: Sim) : Sim =
     | [] -> s
     | _ when budget = 0 -> s
     | events ->
-        // the earliest by time, then by order: the head of a sort, because List.minBy with a tuple key is not compiled yet (fsharp-wasm#34)
-        let ((t, o, epoch, e) as first) = events |> List.sortBy (fun (t, o, _, _) -> t, o) |> List.head
+        // the earliest by time, then by order
+        let ((t, o, epoch, e) as first) = events |> List.minBy (fun (t, o, _, _) -> t, o)
         let rest = events |> List.filter (fun x -> x <> first)
         let worker = match e with Started w | Replied(w, _, _) | Exited(w, _) -> w | Submit _ -> 0
         let current = epochOf worker s
