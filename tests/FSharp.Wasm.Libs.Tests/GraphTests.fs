@@ -277,6 +277,50 @@ let doc =
             Expect.equal (b.Get(id, "x")) (Num 5.0) "kept"
             b.Apply create.Patch |> ignore
             Expect.equal (b.Kind id, b.Get(id, "x")) ("Thing", Num 5.0) "and the node is what it was"
+        testCase "Nodes are the nodes that exist, and a calc over them runs when one comes or goes and for nothing else" <| fun () ->
+            let d = Doc(1)
+            let nodes = Calc<int[]>(d.Engine, Same.never, [||], (fun _ _ -> ()), fun () -> d.Nodes)
+            let mutable a = 0
+            let mutable b = 0
+            let made = d.Edit("two", fun tx -> a <- tx.Create "A"; b <- tx.Create "B")
+            Expect.equal nodes.Value (Array.sort [| a; b |]) "both are there"
+            Expect.equal made.Flushed.Ran 1 "one run for the two"
+            let named = d.Edit("name", fun tx -> tx.Set(a, "name", Text "a"))
+            Expect.equal named.Flushed.Ran 0 "a field is not a node"
+            let gone = d.Edit("delete", fun tx -> tx.Delete b)
+            Expect.equal nodes.Value [| a |] "one is gone"
+            Expect.equal gone.Flushed.Ran 1 "and the calc ran"
+            let back = d.Apply gone.Inverse
+            Expect.equal nodes.Value (Array.sort [| a; b |]) "the undo brings it back"
+            Expect.equal back.Flushed.Ran 1 "and the calc ran"
+        testCase "Links are the Refs of the fields, in a register, an entry of a map and an item of a list, and a calc over them is reached by a Ref and by nothing else" <| fun () ->
+            let d = Doc(1)
+            let links = Calc<(int * int)[]>(d.Engine, Same.never, [||], (fun _ _ -> ()), fun () -> d.Links)
+            let mutable a = 0
+            let mutable b = 0
+            let mutable c = 0
+            d.Edit("three", fun tx -> a <- tx.Create "N"; b <- tx.Create "N"; c <- tx.Create "N") |> ignore
+            Expect.equal links.Value [||] "no link yet"
+            let other = d.Edit("a number", fun tx -> tx.Set(a, "size", Num 3.0); tx.Set(b, "title", Text "b"))
+            Expect.equal other.Flushed.Ran 0 "a number and a text are no link"
+            d.Edit("register", fun tx -> tx.Set(a, "next", Ref b)) |> ignore
+            Expect.equal links.Value [| (a, b) |] "a register"
+            d.Edit("map", fun tx -> tx.Put(a, "by", "key", Ref c)) |> ignore
+            Expect.equal links.Value [| (a, c); (a, b) |] "a map entry (the field `by` is before `next`)"
+            d.Edit("list", fun tx -> tx.Insert(b, "kids", 0, Ref c)) |> ignore
+            Expect.equal links.Value [| (a, c); (a, b); (b, c) |] "a list item"
+            let moved = d.Edit("retarget", fun tx -> tx.Set(a, "next", Ref c))
+            Expect.equal links.Value [| (a, c); (a, c); (b, c) |] "a register that points elsewhere"
+            Expect.equal moved.Flushed.Ran 1 "one run"
+            let cut = d.Edit("cut", fun tx -> tx.Set(a, "next", Nil))
+            Expect.equal links.Value [| (a, c); (b, c) |] "a register that is cleared"
+            d.Apply cut.Inverse |> ignore
+            Expect.equal links.Value [| (a, c); (a, c); (b, c) |] "and its undo"
+            d.Edit("list again", fun tx -> tx.Remove(b, "kids", 0)) |> ignore
+            Expect.equal links.Value [| (a, c); (a, c) |] "an item taken out of a list is no link"
+            let gone = d.Edit("delete", fun tx -> tx.Delete a)
+            Expect.equal links.Value [||] "the links of a node that is deleted are not drawn"
+            Expect.equal gone.Flushed.Ran 1 "one run"
         testCase "a calc over the graph runs for the edits that reach it, and the answer of the edit says how many it left alone" <| fun () ->
             let d = Doc(1)
             let mutable id = 0

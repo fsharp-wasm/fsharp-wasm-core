@@ -93,6 +93,12 @@ type Doc(actor: int) =
     let atoms () : Source<Atom> = Source<Atom>(engine, Nil, Atom.same)
     let counts () : Source<int> = Source<int>(engine, 0, Same.int)
 
+    /// changes when a node comes or goes (made, deleted, brought back): what `Nodes` depends on
+    let shape = counts ()
+    /// changes when a `Ref` is set, put, inserted, taken out or brought back, or is written over: what `Links` depends on
+    let refs = counts ()
+    let isRef (a: Atom) : bool = match a with Ref _ -> true | _ -> false
+
     let node (id: int) : NodeState =
         match nodes.TryGetValue id with
         | true, n -> n
@@ -173,11 +179,13 @@ type Doc(actor: int) =
             if n.Created then (op, [])
             else
                 n.Created <- true
+                bump shape
                 (op, [ Delete id ])
         | Delete id ->
             let n = node id
             if n.Alive.Peek then
                 n.Alive.Set false |> ignore
+                bump shape
                 (op, [ Revive id ])
             else (op, [])
         | Revive id ->
@@ -185,6 +193,7 @@ type Doc(actor: int) =
             if n.Alive.Peek then (op, [])
             else
                 n.Alive.Set true |> ignore
+                bump shape
                 (op, [ Delete id ])
         | Set (id, field, value, stamp0) ->
             let stamp = stamped stamp0
@@ -193,6 +202,7 @@ type Doc(actor: int) =
                 let before = r.Source.Peek
                 r.Stamp <- stamp
                 r.Source.Set value |> ignore
+                if isRef before || isRef value then bump refs
                 (Set (id, field, value, stamp), [ Set (id, field, before, Stamp.none) ])
             else (Set (id, field, value, stamp), [])
         | Put (id, field, key, value, stamp0) ->
@@ -204,6 +214,7 @@ type Doc(actor: int) =
                 r.Stamp <- stamp
                 r.Source.Set value |> ignore
                 if (before = Nil) <> (value = Nil) then bump e.Keys
+                if isRef before || isRef value then bump refs
                 (Put (id, field, key, value, stamp), [ Put (id, field, key, before, Stamp.none) ])
             else (Put (id, field, key, value, stamp), [])
         | Insert (id, field, after, item0, value) ->
@@ -216,6 +227,7 @@ type Doc(actor: int) =
                 while at < l.Items.Count && l.Items.[at].Stamp > item do at <- at + 1
                 l.Items.Insert(at, { Stamp = item; Atom = value; Dead = false })
                 bump l.Version
+                if isRef value then bump refs
                 (Insert (id, field, after, item, value), [ Drop (id, field, item) ])
         | Drop (id, field, item) ->
             let l = items id field
@@ -223,6 +235,7 @@ type Doc(actor: int) =
             if i >= 0 && not l.Items.[i].Dead then
                 l.Items.[i].Dead <- true
                 bump l.Version
+                if isRef l.Items.[i].Atom then bump refs
                 (op, [ Restore (id, field, item) ])
             else (op, [])
         | Restore (id, field, item) ->
@@ -231,6 +244,7 @@ type Doc(actor: int) =
             if i >= 0 && l.Items.[i].Dead then
                 l.Items.[i].Dead <- false
                 bump l.Version
+                if isRef l.Items.[i].Atom then bump refs
                 (op, [ Drop (id, field, item) ])
             else (op, [])
         | Append (id, field, values) ->
@@ -276,6 +290,40 @@ type Doc(actor: int) =
     member _.Tick() : int64 = tick ()
 
     // ---- reading: inside a calc, what is read is what the calc depends on ----
+
+    /// The nodes that exist (made, and not deleted), by id; the calc depends on which nodes there are, not on what is in them.
+    member _.Nodes : int[] =
+        shape.Value |> ignore
+        [| for kv in nodes do
+             if kv.Value.Created && kv.Value.Alive.Peek then yield kv.Key |]
+        |> Array.sort
+
+    /// The links of the graph: `(a, b)` for every `Ref b` in a field of the node `a` (a register, an entry of a map, an item of a list that is there), by the id of `a` and the name of the field.
+    /// The calc depends on which nodes there are and which links, and is not reached by an edit of anything else; a link to a node that is gone is still there (it is what the field says).
+    member _.Links : (int * int)[] =
+        shape.Value |> ignore
+        refs.Value |> ignore
+        [| for id in (nodes.Keys |> Seq.sort) do
+             let n = nodes.[id]
+             if n.Created && n.Alive.Peek then
+                 for kv in (n.Fields |> Seq.sortBy (fun kv -> kv.Key)) do
+                     match kv.Value with
+                     | One r ->
+                         match r.Source.Peek with
+                         | Ref t -> yield (id, t)
+                         | _ -> ()
+                     | Many e ->
+                         for kv2 in (e.Registers |> Seq.sortBy (fun kv2 -> kv2.Key)) do
+                             match kv2.Value.Source.Peek with
+                             | Ref t -> yield (id, t)
+                             | _ -> ()
+                     | List l ->
+                         for it in l.Items do
+                             if not it.Dead then
+                                 match it.Atom with
+                                 | Ref t -> yield (id, t)
+                                 | _ -> ()
+                     | Column _ -> () |]
 
     member _.Exists(id: int) : bool =
         match nodes.TryGetValue id with
