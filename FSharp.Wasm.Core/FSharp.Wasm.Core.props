@@ -27,6 +27,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Collections/Map.fs"                          Condition="$(FSharpWasmCoreOnly.Contains('Collections'))" />
     <Compile Include="$(MSBuildThisFileDirectory)Collections/Set.fs"                          Condition="$(FSharpWasmCoreOnly.Contains('Collections'))" />
     <Compile Include="$(MSBuildThisFileDirectory)Collections/System.Collections.Generic.fs"   Condition="$(FSharpWasmCoreOnly.Contains('Collections'))" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections/System.StringComparer.fs"        Condition="$(FSharpWasmCoreOnly.Contains('Collections'))" />
     <Compile Include="$(MSBuildThisFileDirectory)Collections/ListHelpers.fs"                  Condition="$(FSharpWasmCoreOnly.Contains('Lists'))" />
     <Compile Include="$(MSBuildThisFileDirectory)Math/MathHelpers.fs"                         Condition="$(FSharpWasmCoreOnly.Contains('Math'))" />
     <Compile Include="$(MSBuildThisFileDirectory)Task.fs"                                     Condition="$(FSharpWasmCoreOnly.Contains('Bcl'))" />

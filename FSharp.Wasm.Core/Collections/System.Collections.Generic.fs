@@ -166,9 +166,17 @@ type DictionaryEnumerator<'K, 'V>(keys: 'K array, values: 'V array, hashes: int 
     member _.Current : KeyValuePair<'K, 'V> = KeyValuePair(keys.[index], values.[index])
     member _.Dispose() : unit = ()
 
+/// The BCL's comparer interfaces: `Dictionary(comparer)` and `HashSet(comparer)` take an `IEqualityComparer`, as in .NET.
+type IEqualityComparer<'T> =
+    abstract Equals: x: 'T * y: 'T -> bool
+    abstract GetHashCode: item: 'T -> int
+
+type IComparer<'T> =
+    abstract Compare: x: 'T * y: 'T -> int
+
 /// Chained hash table with the .NET layout: entries are handed out in index order, a removed entry joins a free
 /// list that the next insert reuses first — so enumeration order is the BCL's.
-type Dictionary<'K, 'V when 'K : equality>(?items: seq<KeyValuePair<'K, 'V>>) =
+type Dictionary<'K, 'V when 'K : equality>(?items: seq<KeyValuePair<'K, 'V>>, ?comparer: IEqualityComparer<'K>) =
     let mutable buckets : int array = Array.zeroCreate 0      // entry index + 1; 0 = empty bucket
     let mutable hashes : int array = Array.zeroCreate 0       // < 0: the entry is on the free list
     let mutable next : int array = Array.zeroCreate 0         // next entry of the chain, or of the free list (index + 1)
@@ -178,11 +186,21 @@ type Dictionary<'K, 'V when 'K : equality>(?items: seq<KeyValuePair<'K, 'V>>) =
     let mutable count = 0                                     // live entries
     let mutable freeHead = 0                                  // first free entry + 1; 0 = none
 
+    // the comparer, when there is one, decides what the same key is and what its hash is; without one the key's own equality and hash
+    let hashOf (key: 'K) : int =
+        match comparer with
+        | Some c -> c.GetHashCode key
+        | None -> hash key
+    let same (a: 'K) (b: 'K) : bool =
+        match comparer with
+        | Some c -> c.Equals(a, b)
+        | None -> a = b
+
     let find (key: 'K) : int =
         if buckets.Length = 0 then -1 else
-        let h = hash key &&& 0x7FFFFFFF
+        let h = hashOf key &&& 0x7FFFFFFF
         let mutable i = buckets.[h % buckets.Length] - 1
-        while i >= 0 && not (hashes.[i] = h && keys.[i] = key) do i <- next.[i] - 1
+        while i >= 0 && not (hashes.[i] = h && same keys.[i] key) do i <- next.[i] - 1
         i
 
     let resize () : unit =
@@ -221,7 +239,7 @@ type Dictionary<'K, 'V when 'K : equality>(?items: seq<KeyValuePair<'K, 'V>>) =
             if overwrite then values.[existing] <- value
             false
         else
-            let h = hash key &&& 0x7FFFFFFF
+            let h = hashOf key &&& 0x7FFFFFFF
             let slot =
                 if freeHead <> 0 then
                     let i = freeHead - 1
@@ -333,9 +351,13 @@ type Dictionary<'K, 'V when 'K : equality>(?items: seq<KeyValuePair<'K, 'V>>) =
 
     /// `Dictionary(capacity)`: the capacity is only a hint.
     new(_capacity: int) = Dictionary<'K, 'V>()
+    // `Dictionary(items, comparer)` is the primary constructor, its optional parameters given in order; the others pass the option by name
+    // (`comparer = comparer` would name the parameter of THIS constructor and call itself)
+    new(comparer: IEqualityComparer<'K>) = Dictionary<'K, 'V>(?comparer = Some comparer)
+    new(_capacity: int, comparer: IEqualityComparer<'K>) = Dictionary<'K, 'V>(?comparer = Some comparer)
 
-type HashSet<'T when 'T : equality>(?items: seq<'T>) =
-    let table = Dictionary<'T, bool>()
+type HashSet<'T when 'T : equality>(?items: seq<'T>, ?comparer: IEqualityComparer<'T>) =
+    let table = Dictionary<'T, bool>(?comparer = comparer)
     do
         match items with
         | Some xs -> for x in xs do table.TryAdd(x, true) |> ignore
@@ -351,11 +373,11 @@ type HashSet<'T when 'T : equality>(?items: seq<'T>) =
     member this.UnionWith(other: seq<'T>) : unit = for x in other do this.Add x |> ignore
     member this.ExceptWith(other: seq<'T>) : unit = for x in other do this.Remove x |> ignore
     member this.IntersectWith(other: seq<'T>) : unit =
-        let keep = HashSet<'T>(other)
+        let keep = HashSet<'T>(other, ?comparer = comparer)
         for x in table.Keys do
             if not (keep.Contains x) then table.Remove x |> ignore
     member this.IsSubsetOf(other: seq<'T>) : bool =
-        let o = HashSet<'T>(other)
+        let o = HashSet<'T>(other, ?comparer = comparer)
         let mutable ok = true
         for x in table.Keys do
             if not (o.Contains x) then ok <- false
@@ -371,7 +393,7 @@ type HashSet<'T when 'T : equality>(?items: seq<'T>) =
             if this.Contains x then any <- true
         any
     member this.SetEquals(other: seq<'T>) : bool =
-        let o = HashSet<'T>(other)
+        let o = HashSet<'T>(other, ?comparer = comparer)
         o.Count = this.Count && this.IsSubsetOf(other)
 
     /// A seq is a list in the wasm backend: `h :> seq<_>` calls this.
@@ -385,4 +407,5 @@ type HashSet<'T when 'T : equality>(?items: seq<'T>) =
 
     /// `HashSet(capacity)`: the capacity is only a hint.
     new(_capacity: int) = HashSet<'T>()
-
+    new(comparer: IEqualityComparer<'T>) = HashSet<'T>(?comparer = Some comparer)
+    new(_capacity: int, comparer: IEqualityComparer<'T>) = HashSet<'T>(?comparer = Some comparer)
