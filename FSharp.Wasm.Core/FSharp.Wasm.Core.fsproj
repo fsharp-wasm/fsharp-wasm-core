@@ -22,4 +22,11 @@
   </PropertyGroup>
   <Import Project="FSharp.Wasm.Core.props" />
 
+  <!-- The package puts the sources into the program by a props file that NuGet imports (build/), not by a project of their own under fable/: a project of their own is
+       a reference, and the type of the program's `Dictionary` stays the BCL's then. -->
+  <ItemGroup Condition="'$(IsPackable)' == 'true'">
+    <Content Remove="FSharp.Wasm.Core.fsproj" />
+    <None Include="build/FSharp.Wasm.Core.props" Pack="true" PackagePath="build/" />
+  </ItemGroup>
+
 </Project>

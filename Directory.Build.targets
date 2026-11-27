@@ -5,4 +5,9 @@
     <!-- A reproducible package (source paths mapped to /_/) only where a package is made: a tool that finds its files by __SOURCE_DIRECTORY__ (tools/design) has to see the real one. -->
     <ContinuousIntegrationBuild Condition="'$(CI)' == 'true'">true</ContinuousIntegrationBuild>
   </PropertyGroup>
+  <!-- A library that depends on the base library hands the build assets of the package on (the build/ props that put its sources into a program), which a
+       package dependency does not do by default: without it a program that references only FSharp.Wasm.Frame has no Dictionary. -->
+  <ItemGroup>
+    <ProjectReference Update="$(MSBuildThisFileDirectory)FSharp.Wasm.Core/FSharp.Wasm.Core.fsproj" PrivateAssets="none" />
+  </ItemGroup>
 </Project>

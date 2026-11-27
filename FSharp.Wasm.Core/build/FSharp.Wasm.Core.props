@@ -1,0 +1,8 @@
+<Project>
+  <!-- NuGet imports this file into every project that references the package FSharp.Wasm.Core (and, through it, into every project that references a package that
+       depends on it).  For the fsharp-wasm compiler, which sets FABLE_COMPILER_WASMGC, the sources of the base library come first in the compile list of the
+       project: the Dictionary, the HashSet and the others are then the program's own types, as they are when a checkout of the library is imported by
+       FSharp.Wasm.Core.props.  Under .NET nothing happens: the program uses the BCL.  A program that wants only part of the library sets FSharpWasmCoreOnly
+       (Interop;Bcl;Option;Result;Collections;Lists;Math) in its Directory.Build.props; the default is Collections. -->
+  <Import Project="$(MSBuildThisFileDirectory)../fable/FSharp.Wasm.Core.props" Condition="'$(FABLE_COMPILER_WASMGC)' == 'True'" />
+</Project>
