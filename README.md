@@ -68,6 +68,15 @@ Import it from the root of the dependency graph (the files must precede everythi
 selects groups (`Interop;Bcl;Option;Result;Collections;Lists;Math`; default `Collections`). The compiler finds the library by
 itself — `FSHARP_WASM_CORE_DIR`, else the `core/` checkout inside its repository, else a sibling `fsharp-wasm-core/`.
 
+## Packages
+
+Each library is a NuGet package of the same name: the dll for .NET, its XML documentation, and the sources under `fable/` (a program compiled by
+fsharp-wasm compiles the libraries it uses together with its own code). A library that builds on another names it by the same version.
+
+Not on nuget.org yet (checked 2026-11-27). `bash build/pack.sh [version]` makes the twelve packages in `dist/nupkg`, and `bash build/smoke-pack.sh <version>`
+restores them in a new project and runs it. `.github/workflows/release.yml` does both for a tag `vX.Y.Z` on `main`, attaches the packages to a GitHub release and
+pushes them when the secret `NUGET_API_KEY` is set; run by hand it is a dry run that publishes nothing.
+
 ## Where things are
 
 | | |
