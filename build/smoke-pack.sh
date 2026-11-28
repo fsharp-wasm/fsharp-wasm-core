@@ -4,7 +4,7 @@
 #   bash build/smoke-pack.sh <version>      # after `bash build/pack.sh <version>`
 #
 # It checks what a unit test cannot: that the package restores with its dependencies (FSharp.Wasm.Live brings Core, Frame and Graph), that the dll loads, and that
-# the sources are in the package where the compiler looks for them (fable/).  The packages cache is the temporary folder's own, so a package of the same
+# the sources are in the package where the compiler looks for them (fable/; for the base library also the props file under build/).  The packages cache is the temporary folder's own, so a package of the same
 # version from an earlier run cannot be what is tested.
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -33,7 +33,11 @@ match Json.parse "{\"a\":[1,2,3]}" with
 printfn "%s" (System.Reflection.Assembly.Load("FSharp.Wasm.Live").GetName().Version.ToString())
 FS
 dotnet run -c Release --nologo -v q
-for id in FSharp.Wasm.Core FSharp.Wasm.Frame FSharp.Wasm.Graph FSharp.Wasm.Live; do
+# the base library gives a program its sources by a props file that NuGet imports (build/), and carries them under fable/ without a project of their own; the others
+# carry a project under fable/ that the front end reads
+core="$NUGET_PACKAGES/fsharp.wasm.core/$VERSION"
+ls "$core/build/FSharp.Wasm.Core.props" "$core/fable/Collections/System.Collections.Generic.fs" > /dev/null || { echo "FSharp.Wasm.Core: no props file under build/ or no sources under fable/" >&2; exit 1; }
+for id in FSharp.Wasm.Frame FSharp.Wasm.Graph FSharp.Wasm.Live; do
   lower="$(echo "$id" | tr '[:upper:]' '[:lower:]')"
   ls "$NUGET_PACKAGES/$lower/$VERSION/fable/"*.fsproj > /dev/null || { echo "$id: no sources under fable/" >&2; exit 1; }
 done
